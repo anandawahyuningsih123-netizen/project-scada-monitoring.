@@ -468,6 +468,19 @@ while (alarmHistory.children.length > 10) {
     oscillator.stop(audio.currentTime + 0.5);
     oscillator.onended = () => audio.close();
 }
+    let lastSoundState = "";
+
+function checkAlarmSound(type) {
+    if (type === lastSoundState) return;
+
+    lastSoundState = type;
+
+    if (type === "danger") {
+        playAlarm("danger");
+    } else if (type === "warning") {
+        playAlarm("warning");
+    }
+}
 
 function manualPump(state) {
     automatic = false;
