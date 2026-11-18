@@ -93,23 +93,39 @@ h2 {
     text-transform: uppercase;
     letter-spacing: 1.5px;
 }
+    .value {
+    font-size: 32px;
+    font-weight: 800;
+    color: #ffffff;
+    text-align: center;
+    margin: 15px 0;
+    padding: 12px;
+    background: #0b1b30;
+    border: 1px solid #285071;
+    border-radius: 10px;
+    text-shadow: 0 0 12px #38bdf855;
+}
+}
 .card p {
-    font-size: 28px;
-    font-weight: 700;
-    margin: 8px 0;
-    color: #f8fafc;
+    font-size: 13px;
+    font-weight: 500;
+    margin: 10px 0;
+    color: #cbd5e1;
+    text-align: center;
 }
 
 button {
-    border: none;
-    border-radius: 7px;
-    padding: 11px 20px;
-    margin: 5px;
-    font-weight: 600;
+    border: 1px solid #38bdf8;
+    border-radius: 9px;
+    padding: 12px 20px;
+    margin: 6px;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(135deg, #0369a1, #0284c7);
     cursor: pointer;
-    transition: 0.2s;
+    transition: 0.3s ease;
+    box-shadow: 0 4px 12px #0284c733;
 }
-
 button:hover {
     filter: brightness(1.15);
     transform: translateY(-2px);
@@ -137,9 +153,9 @@ button:nth-of-type(3) {
 
 /* ILUSTRASI TANDON AIR INDUSTRI */
 .tank {
-    width: 180px;
-    height: 210px;
-    margin: 25px auto;
+    width: 130px;
+    height: 160px;
+    margin: 20px auto;
     position: relative;
     background: linear-gradient(
         90deg,
@@ -205,7 +221,21 @@ button:nth-of-type(3) {
 canvas {
     max-width: 100%;
 }
+.panel {
+    background: linear-gradient(145deg, #172b45, #101d30);
+    border: 1px solid #294563;
+    border-radius: 16px;
+    padding: 22px;
+    margin: 20px 28px;
+    box-shadow: 0 10px 30px #0004;
+}
 
+.panel h2 {
+    color: #38bdf8;
+    font-size: 17px;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+}
 #history {
     background: #0f1b2d;
     border: 1px solid #263b55;
@@ -214,21 +244,20 @@ canvas {
     color: #cbd5e1;
 }
 
-@media (max-width: 768px) {
-    header {
-        padding: 20px;
-    }
+/* SUSUNAN KARTU DASHBOARD */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
     margin-bottom: 25px;
 }
-    @media (max-width: 768px) {
-    .grid {
-        grid-template-columns: 1fr;
+
+/* TAMPILAN HP */
+@media (max-width: 768px) {
+    header {
+        padding: 20px;
     }
-}
+
     header h1 {
         font-size: 19px;
     }
@@ -240,8 +269,11 @@ canvas {
     .card {
         padding: 16px;
     }
-}
 
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
 /* STATUS INDIKATOR SCADA */
 .status-normal {
     color: #34d399 !important;
