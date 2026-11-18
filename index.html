@@ -445,7 +445,29 @@ while (alarmHistory.children.length > 10) {
         addHistory("Koneksi sistem terputus");
     }
 }
-   
+   function playAlarm(type) {
+    const audio = new AudioContext();
+    const oscillator = audio.createOscillator();
+    const volume = audio.createGain();
+
+    oscillator.connect(volume);
+    volume.connect(audio.destination);
+
+    oscillator.type = "sine";
+
+    if (type === "danger") {
+        oscillator.frequency.value = 1000;
+        volume.gain.value = 0.3;
+    } else if (type === "warning") {
+        oscillator.frequency.value = 600;
+        volume.gain.value = 0.2;
+    }
+
+    oscillator.start();
+
+    oscillator.stop(audio.currentTime + 0.5);
+    oscillator.onended = () => audio.close();
+}
 
 function manualPump(state) {
     automatic = false;
