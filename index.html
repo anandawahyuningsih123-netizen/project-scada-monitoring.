@@ -356,6 +356,28 @@ function updateDashboard() {
         water.style.background = "#0ea5e9";
     }
 }
+    let lastAlarm = "";
+
+function recordAlarm(message) {
+    if (message === lastAlarm) return;
+
+    lastAlarm = message;
+
+    const time = new Date().toLocaleTimeString("id-ID");
+    const alarmHistory = document.getElementById("alarmHistory");
+
+    if (lastAlarm === "") return;
+
+    if (message === "✓ Sistem berjalan normal") {
+        alarmHistory.innerHTML =
+            "<p>[" + time + "] Sistem kembali NORMAL</p>" +
+            alarmHistory.innerHTML;
+    } else {
+        alarmHistory.innerHTML =
+            "<p>[" + time + "] " + message + "</p>" +
+            alarmHistory.innerHTML;
+    }
+}
 
    
 
