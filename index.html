@@ -336,6 +336,7 @@ function updateDashboard() {
         alarmText.style.color = "#f87171";
 
         water.style.background = "#ef4444";
+        recordAlarm(alarmText.innerText);
 
     } else if (level >= 90) {
         systemText.innerText = "PERINGATAN";
@@ -345,6 +346,7 @@ function updateDashboard() {
         alarmText.style.color = "#fbbf24";
 
         water.style.background = "#facc15";
+        recordAlarm(alarmText.innerText);
 
     } else {
         systemText.innerText = "NORMAL";
