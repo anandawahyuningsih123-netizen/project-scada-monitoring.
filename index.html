@@ -464,51 +464,49 @@ function addHistory(message) {
 
 
 function updateDashboard() {
-    level = Math.max(0, Math.min(100, level));
 
-    let volume = Math.round(level * 20);
+    const levels = [levelA, levelB, levelC];
 
-    levelText.innerText = level.toFixed(1) + "%";
-    volumeText.innerText = volume.toLocaleString("id-ID") + " Liter";
-    water.style.height = level + "%";
+    levels.forEach((level, index) => {
+
+        level = Math.max(0, Math.min(100, level));
+
+        tanks[index].value = level;
+
+        let volume = Math.round(level * 20);
+
+        tanks[index].level.innerText = level.toFixed(1) + "%";
+        tanks[index].volume.innerText =
+            volume.toLocaleString("id-ID") + " Liter";
+
+        tanks[index].water.style.height = level + "%";
+
+        if (level <= 20) {
+            tanks[index].water.style.background = "#ef4444";
+        } else if (level >= 90) {
+            tanks[index].water.style.background = "#facc15";
+        } else {
+            tanks[index].water.style.background = "#0ea5e9";
+        }
+    });
 
     pumpText.innerText = pump ? "ON" : "OFF";
     pumpText.style.color = pump ? "#22c55e" : "#ef4444";
 
     modeText.innerText = automatic ? "OTOMATIS" : "MANUAL";
 
-    if (level <= 20) {
-        checkAlarmSound("danger");
+    if (levels.some(level => level <= 20)) {
         systemText.innerText = "BAHAYA";
         systemText.className = "status-danger";
-
-        alarmText.innerText = "⚠ BAHAYA: Air terlalu rendah!";
-        alarmText.style.color = "#f87171";
-
-        water.style.background = "#ef4444";
-        recordAlarm(alarmText.innerText);
-
-    } else if (level >= 90) {
-        checkAlarmSound("warning");
+        alarmText.innerText = "⚠ BAHAYA: Air salah satu tandon terlalu rendah!";
+    } else if (levels.some(level => level >= 90)) {
         systemText.innerText = "PERINGATAN";
         systemText.className = "status-warning";
-
-        alarmText.innerText = "⚠ PERINGATAN: Tandon hampir penuh!";
-        alarmText.style.color = "#fbbf24";
-
-        water.style.background = "#facc15";
-        recordAlarm(alarmText.innerText);
-
+        alarmText.innerText = "⚠ PERINGATAN: Salah satu tandon hampir penuh!";
     } else {
-        lastSoundState = "normal";
         systemText.innerText = "NORMAL";
         systemText.className = "status-normal";
-
-        alarmText.innerText = "✓ Sistem berjalan normal";
-        alarmText.style.color = "#34d399";
-
-        water.style.background = "#0ea5e9";
-        recordAlarm(alarmText.innerText);
+        alarmText.innerText = "✓ Semua tandon berjalan normal";
     }
 }
     let lastAlarm = "";
