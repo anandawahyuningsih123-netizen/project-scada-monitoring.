@@ -572,9 +572,7 @@ function recordAlarm(message) {
 
     const time = new Date().toLocaleTimeString("id-ID");
     const alarmHistory = document.getElementById("alarmHistory");
-    while (alarmHistory.children.length > 10) {
-    alarmHistory.removeChild(alarmHistory.lastElementChild);
-}
+  
 
     if (lastAlarm === "") return;
 
