@@ -418,15 +418,36 @@ canvas {
 </footer>
 
 <script>
-let level = 65;
+let levelA = 65;
+let levelB = 65;
+let levelC = 65;
+
 let pump = false;
 let automatic = true;
 let data = [];
 let activities = [];
 
-const levelText = document.getElementById("level");
-const volumeText = document.getElementById("volume");
-const water = document.getElementById("water");
+const tanks = [
+    {
+        level: document.getElementById("levelA"),
+        volume: document.getElementById("volumeA"),
+        water: document.getElementById("waterA"),
+        value: 65
+    },
+    {
+        level: document.getElementById("levelB"),
+        volume: document.getElementById("volumeB"),
+        water: document.getElementById("waterB"),
+        value: 65
+    },
+    {
+        level: document.getElementById("levelC"),
+        volume: document.getElementById("volumeC"),
+        water: document.getElementById("waterC"),
+        value: 65
+    }
+];
+
 const pumpText = document.getElementById("pump");
 const modeText = document.getElementById("mode");
 const systemText = document.getElementById("system");
