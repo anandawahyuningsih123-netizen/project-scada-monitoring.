@@ -305,6 +305,7 @@ function addHistory(message) {
         activities.map(item => "<p>" + item + "</p>").join("");
 }
 
+
 function updateDashboard() {
     level = Math.max(0, Math.min(100, level));
 
@@ -321,21 +322,34 @@ function updateDashboard() {
 
     if (level <= 20) {
         systemText.innerText = "BAHAYA";
-        systemText.style.color = "#ef4444";
-        alarmText.innerText = "Air terlalu rendah!";
+        systemText.className = "status-danger";
+
+        alarmText.innerText = "⚠ BAHAYA: Air terlalu rendah!";
+        alarmText.style.color = "#f87171";
+
         water.style.background = "#ef4444";
+
     } else if (level >= 90) {
         systemText.innerText = "PERINGATAN";
-        systemText.style.color = "#facc15";
-        alarmText.innerText = "Tandon hampir penuh!";
+        systemText.className = "status-warning";
+
+        alarmText.innerText = "⚠ PERINGATAN: Tandon hampir penuh!";
+        alarmText.style.color = "#fbbf24";
+
         water.style.background = "#facc15";
+
     } else {
         systemText.innerText = "NORMAL";
-        systemText.style.color = "#22c55e";
-        alarmText.innerText = "Tidak ada alarm";
+        systemText.className = "status-normal";
+
+        alarmText.innerText = "✓ Sistem berjalan normal";
+        alarmText.style.color = "#34d399";
+
         water.style.background = "#0ea5e9";
     }
 }
+
+   
 
 function manualPump(state) {
     automatic = false;
