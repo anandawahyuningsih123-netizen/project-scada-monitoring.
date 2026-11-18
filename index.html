@@ -161,6 +161,61 @@ canvas {
     }
 }
 
+/* STATUS INDIKATOR SCADA */
+.status-normal {
+    color: #34d399 !important;
+    background: #064e3b;
+    padding: 7px 13px;
+    border-radius: 6px;
+}
+
+.status-warning {
+    color: #fbbf24 !important;
+    background: #78350f;
+    padding: 7px 13px;
+    border-radius: 6px;
+    animation: pulse-warning 1.5s infinite;
+}
+
+.status-danger {
+    color: #f87171 !important;
+    background: #7f1d1d;
+    padding: 7px 13px;
+    border-radius: 6px;
+    animation: pulse-danger 0.8s infinite;
+}
+
+@keyframes pulse-warning {
+    50% { opacity: 0.55; }
+}
+
+@keyframes pulse-danger {
+    50% { opacity: 0.35; }
+}
+
+/* PANEL ALARM */
+.alarm-panel {
+    background: #17263a;
+    border: 1px solid #334155;
+    border-left: 5px solid #22c55e;
+    border-radius: 10px;
+    padding: 18px;
+    margin-top: 20px;
+}
+
+.alarm-panel.warning {
+    border-left-color: #fbbf24;
+}
+
+.alarm-panel.danger {
+    border-left-color: #ef4444;
+}
+
+.alarm-panel h3 {
+    margin-top: 0;
+    color: #f8fafc;
+}
+
 </style>
 </head>
 
