@@ -298,6 +298,41 @@ setInterval(function() {
 history = Array(30).fill(level);
 updateDashboard();
 drawChart();
+    
+// PANEL ALARM SCADA
+const alarmPanel = document.createElement("div");
+
+alarmPanel.style.cssText = `
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 10px;
+  background: #166534;
+  color: white;
+  font-weight: bold;
+  z-index: 9999;
+  box-shadow: 0 4px 12px #0005;
+`;
+
+document.body.appendChild(alarmPanel);
+
+function checkAlarm() {
+  if (level <= 20) {
+    alarmPanel.style.background = "#dc2626";
+    alarmPanel.textContent = "🚨 ALARM! KETINGGIAN AIR RENDAH";
+  } else if (level >= 95) {
+    alarmPanel.style.background = "#ea580c";
+    alarmPanel.textContent = "⚠️ PERINGATAN! AIR TERLALU TINGGI";
+  } else {
+    alarmPanel.style.background = "#166534";
+    alarmPanel.textContent = "✓ SISTEM NORMAL";
+  }
+}
+
+setInterval(checkAlarm, 1000);
+checkAlarm();
+
 </script>
 
 </body>
