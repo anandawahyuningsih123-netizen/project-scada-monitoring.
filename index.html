@@ -661,8 +661,13 @@ function manualPump(state) {
 function automaticMode() {
     automatic = true;
 
-    if (level <= 30) pump = true;
-    if (level >= 90) pump = false;
+    if (levelA <= 30 || levelB <= 30 || levelC <= 30) {
+        pump = true;
+    }
+
+    if (levelA >= 90 && levelB >= 90 && levelC >= 90) {
+        pump = false;
+    }
 
     updateDashboard();
     addHistory("Mode otomatis diaktifkan");
@@ -713,27 +718,45 @@ function drawChart() {
 }
 
 for (let i = 0; i < 30; i++) {
-    data.push(level);
+    data.push(levelA);
 }
 
 setInterval(() => {
+
     if (automatic) {
-        if (level <= 30) pump = true;
-        if (level >= 90) pump = false;
+        if (levelA <= 30 || levelB <= 30 || levelC <= 30) {
+            pump = true;
+        }
+
+        if (levelA >= 90 && levelB >= 90 && levelC >= 90) {
+            pump = false;
+        }
     }
 
-    if (pump) level += 1;
-    else level -= 0.2;
+    if (pump) {
+        levelA += 0.5;
+        levelB += 0.5;
+        levelC += 0.5;
+    } else {
+        levelA -= 0.1;
+        levelB -= 0.1;
+        levelC -= 0.1;
+    }
 
-    level = Math.max(0, Math.min(100, level));
+    levelA = Math.max(0, Math.min(100, levelA));
+    levelB = Math.max(0, Math.min(100, levelB));
+    levelC = Math.max(0, Math.min(100, levelC));
 
-    data.push(level);
-    if (data.length > 30) data.shift();
+    data.push(levelA);
+
+    if (data.length > 30) {
+        data.shift();
+    }
 
     updateDashboard();
     drawChart();
-}, 1000);
 
+}, 1000);
 window.addEventListener("resize", drawChart);
 
 updateDashboard();
