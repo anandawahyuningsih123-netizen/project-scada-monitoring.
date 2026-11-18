@@ -235,6 +235,19 @@ canvas {
     border-left: 4px solid #f59e0b;
     border-radius: 5px;
 }
+    .connection-status {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+#connection {
+    color: #34d399;
+    font-weight: bold;
+    background: #064e3b;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
 </style>
 </head>
 
@@ -243,6 +256,10 @@ canvas {
 <header>
     <h1>SCADA WATER MONITORING</h1>
     <p>Sistem Monitoring dan Kontrol Tandon Air</p>
+    <div class="connection-status">
+    Status Koneksi:
+    <span id="connection">● ONLINE</span>
+</div>
 </header>
 
 <div class="container">
