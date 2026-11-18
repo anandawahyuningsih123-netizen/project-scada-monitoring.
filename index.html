@@ -370,6 +370,7 @@ function updateDashboard() {
     modeText.innerText = automatic ? "OTOMATIS" : "MANUAL";
 
     if (level <= 20) {
+        checkAlarmSound("danger");
         systemText.innerText = "BAHAYA";
         systemText.className = "status-danger";
 
@@ -380,6 +381,7 @@ function updateDashboard() {
         recordAlarm(alarmText.innerText);
 
     } else if (level >= 90) {
+        checkAlarmSound("warning");
         systemText.innerText = "PERINGATAN";
         systemText.className = "status-warning";
 
@@ -390,6 +392,7 @@ function updateDashboard() {
         recordAlarm(alarmText.innerText);
 
     } else {
+        lastSoundState = "normal";
         systemText.innerText = "NORMAL";
         systemText.className = "status-normal";
 
