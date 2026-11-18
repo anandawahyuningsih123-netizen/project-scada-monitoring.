@@ -321,7 +321,7 @@ function checkAlarm() {
   if (level <= 20) {
     alarmPanel.style.background = "#dc2626";
     alarmPanel.textContent = "🚨 ALARM! KETINGGIAN AIR RENDAH";
-  } else if (level >= 95) {
+  } else if (level >= 90) {
     alarmPanel.style.background = "#ea580c";
     alarmPanel.textContent = "⚠️ PERINGATAN! AIR TERLALU TINGGI";
   } else {
@@ -393,6 +393,76 @@ setInterval(function() {
     playAlarmBeep();
   }
 }, 1500);
+    
+// RIWAYAT AKTIVITAS SCADA
+const eventPanel = document.createElement("div");
+
+eventPanel.innerHTML = `
+  <h2>Riwayat Aktivitas Sistem</h2>
+  <div id="eventLog"></div>
+`;
+
+eventPanel.style.cssText = `
+  margin: 25px 0;
+  padding: 20px;
+  background: #1e293b;
+  color: white;
+  border-radius: 12px;
+`;
+
+document.body.appendChild(eventPanel);
+
+const eventLog = document.getElementById("eventLog");
+
+function addEvent(message) {
+  const time = new Date().toLocaleTimeString("id-ID");
+
+  const item = document.createElement("p");
+  item.textContent = time + " - " + message;
+  item.style.cssText = `
+    padding: 10px;
+    border-bottom: 1px solid #475569;
+    margin: 0;
+  `;
+
+  eventLog.prepend(item);
+
+  while (eventLog.children.length > 20) {
+    eventLog.removeChild(eventLog.lastChild);
+  }
+}
+
+let previousPump = pump;
+let previousLevelStatus = "";
+
+addEvent("Sistem monitoring dimulai");
+
+setInterval(function() {
+
+  if (pump !== previousPump) {
+    addEvent(
+      pump ? "Pompa menyala (ON)" : "Pompa mati (OFF)"
+    );
+    previousPump = pump;
+  }
+
+  let currentStatus = "";
+
+  if (level <= 20) {
+    currentStatus = "Air sangat rendah";
+  } else if (level >= 90) {
+    currentStatus = "Air hampir penuh";
+  } else {
+    currentStatus = "Normal";
+  }
+
+  if (currentStatus !== previousLevelStatus) {
+    addEvent("Status ketinggian air: " + currentStatus);
+    previousLevelStatus = currentStatus;
+  }
+
+}, 1000);
+
 
 
 </script>
