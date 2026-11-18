@@ -332,6 +332,68 @@ function checkAlarm() {
 
 setInterval(checkAlarm, 1000);
 checkAlarm();
+    
+// FITUR ALARM SUARA SCADA
+let alarmSoundEnabled = false;
+let audioContext = null;
+
+const soundButton = document.createElement("button");
+
+soundButton.textContent = "🔊 Aktifkan Suara Alarm";
+
+soundButton.style.cssText = `
+  position: fixed;
+  bottom: 85px;
+  right: 20px;
+  padding: 12px 16px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 9999;
+`;
+
+document.body.appendChild(soundButton);
+
+soundButton.addEventListener("click", async function() {
+  const AudioEngine =
+    window.AudioContext || window.webkitAudioContext;
+
+  if (!AudioEngine) {
+    alert("Browser tidak mendukung alarm suara.");
+    return;
+  }
+
+  audioContext = audioContext || new AudioEngine();
+  await audioContext.resume();
+
+  alarmSoundEnabled = true;
+  soundButton.textContent = "🔊 Suara Alarm Aktif";
+});
+
+function playAlarmBeep() {
+  if (!alarmSoundEnabled || !audioContext) return;
+
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+
+  oscillator.frequency.value = 880;
+  gain.gain.value = 0.15;
+
+  oscillator.connect(gain);
+  gain.connect(audioContext.destination);
+
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.3);
+}
+
+setInterval(function() {
+  if (level <= 20 || level >= 95) {
+    playAlarmBeep();
+  }
+}, 1500);
+
 
 </script>
 
