@@ -1,68 +1,79 @@
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCADA Water Monitoring</title>
-
-<style>
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: white;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #0b1220;
+    color: #f1f5f9;
 }
 
 header {
-    background: #1e293b;
-    padding: 20px;
-    border-bottom: 2px solid #334155;
+    background: linear-gradient(120deg, #111f35, #123b5b);
+    padding: 28px 25px;
+    border-bottom: 1px solid #1e4968;
+    box-shadow: 0 5px 20px #0004;
 }
 
 header h1 {
     margin: 0;
     color: #38bdf8;
-    font-size: 23px;
+    font-size: 27px;
+    letter-spacing: 1.5px;
 }
 
 header p {
-    color: #cbd5e1;
+    color: #94a3b8;
     margin-bottom: 0;
+    font-size: 14px;
 }
 
 .container {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: auto;
-    padding: 20px;
+    padding: 25px;
+}
+
+h2 {
+    font-size: 20px;
+    color: #e2e8f0;
+    margin-top: 30px;
+    margin-bottom: 18px;
 }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
+    gap: 18px;
 }
 
 .card {
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 12px;
-    padding: 20px;
+    background: linear-gradient(145deg, #17263a, #111c2e);
+    border: 1px solid #263b53;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 8px 20px #0003;
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #38bdf8;
 }
 
 .card h3 {
     color: #94a3b8;
     margin-top: 0;
+    font-size: 15px;
 }
 
 .value {
-    font-size: 34px;
+    font-size: 36px;
     font-weight: bold;
     color: #38bdf8;
+    margin: 12px 0;
 }
 
 #level, #volume {
@@ -82,14 +93,15 @@ header p {
 }
 
 .tank {
-    width: 120px;
-    height: 190px;
-    border: 4px solid #94a3b8;
-    border-radius: 10px;
-    margin: 20px auto;
+    width: 135px;
+    height: 200px;
+    border: 4px solid #64748b;
+    border-radius: 12px;
+    margin: 22px auto;
     position: relative;
     overflow: hidden;
-    background: #0f172a;
+    background: #0b1220;
+    box-shadow: inset 0 0 15px #0008;
 }
 
 .water {
@@ -103,11 +115,18 @@ header p {
 
 button {
     border: none;
-    padding: 12px 18px;
-    margin: 5px;
-    border-radius: 7px;
+    padding: 13px 20px;
+    margin: 6px 4px;
+    border-radius: 9px;
     cursor: pointer;
     font-weight: bold;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.15);
 }
 
 .on {
@@ -126,7 +145,7 @@ button {
 }
 
 .status {
-    font-size: 22px;
+    font-size: 25px;
     font-weight: bold;
     color: #22c55e;
 }
@@ -137,470 +156,32 @@ button {
 }
 
 canvas {
+    display: block;
     width: 100%;
-    height: 180px;
-    background: #0f172a;
-    border-radius: 8px;
+    height: 200px;
+    background: #0b1220;
+    border: 1px solid #263b53;
+    border-radius: 12px;
 }
 
 footer {
     text-align: center;
-    padding: 20px;
-    color: #94a3b8;
-}
-</style>
-</head>
-
-<body>
-
-<header>
-    <h1>SCADA WATER MONITORING</h1>
-    <p>Monitoring Ketinggian Air dan Kontrol Pompa Otomatis</p>
-</header>
-
-<div class="container">
-
-    <h2>Dashboard Monitoring</h2>
-
-    <div class="grid">
-
-        <div class="card">
-            <h3>Ketinggian Air</h3>
-
-            <div class="value" id="level">65%</div>
-
-            <p>
-                Volume Air:
-                <span id="volume">1300</span> Liter
-            </p>
-
-            <div class="tank">
-                <div class="water" id="water"></div>
-            </div>
-
-            <p>Kapasitas Maksimum: 2000 Liter</p>
-            <p>Sensor Level Air</p>
-        </div>
-
-        <div class="card">
-            <h3>Status Pompa</h3>
-            <div class="status" id="pump">OFF</div>
-            <p>Mode: <span id="mode">Otomatis</span></p>
-        </div>
-
-        <div class="card">
-            <h3>Status Sistem</h3>
-            <div class="value" id="system">NORMAL</div>
-            <p id="alarm">Tidak ada alarm</p>
-        </div>
-
-    </div>
-
-    <h2>Kontrol Pompa</h2>
-
-    <div class="card">
-        <button class="on" onclick="manualPump(true)">Pompa ON</button>
-        <button class="off" onclick="manualPump(false)">Pompa OFF</button>
-        <button class="auto" onclick="automaticMode()">Mode Otomatis</button>
-
-        <p>Kontrol pompa simulasi menggunakan JavaScript.</p>
-    </div>
-
-    <h2>Grafik Ketinggian Air</h2>
-
-    <div class="card">
-        <canvas id="chart" width="900" height="180"></canvas>
-    </div>
-
-</div>
-
-<footer>
-    Web-Based SCADA Project | Simulasi Monitoring Air
-</footer>
-
-<script>
-
-// DATA AWAL SISTEM
-let level = 65;
-let pump = false;
-let automatic = true;
-let history = [];
-
-// MENGAMBIL ELEMEN HTML
-const levelText = document.getElementById("level");
-const volumeText = document.getElementById("volume");
-const water = document.getElementById("water");
-const pumpText = document.getElementById("pump");
-const modeText = document.getElementById("mode");
-const alarm = document.getElementById("alarm");
-const system = document.getElementById("system");
-
-// UPDATE DASHBOARD
-function updateDashboard() {
-
-    // MENAMPILKAN KETINGGIAN AIR
-    levelText.innerText = level.toFixed(1) + "%";
-    water.style.height = level + "%";
-
-    // MENGHITUNG VOLUME AIR
-    let volume = (level / 100) * 2000;
-    volumeText.innerText = volume.toFixed(0);
-
-    // MENGHAPUS WARNA SEBELUMNYA
-    levelText.classList.remove(
-        "status-normal",
-        "status-rendah",
-        "status-penuh"
-    );
-
-    volumeText.classList.remove(
-        "status-normal",
-        "status-rendah",
-        "status-penuh"
-    );
-
-    // KONDISI AIR DAN PERUBAHAN WARNA
-    if (level <= 20) {
-
-        levelText.classList.add("status-rendah");
-        volumeText.classList.add("status-rendah");
-
-        water.style.backgroundColor = "#ef4444";
-
-    } else if (level >= 90) {
-
-        levelText.classList.add("status-penuh");
-        volumeText.classList.add("status-penuh");
-
-        water.style.backgroundColor = "#facc15";
-
-    } else {
-
-        levelText.classList.add("status-normal");
-        volumeText.classList.add("status-normal");
-
-        water.style.backgroundColor = "#0ea5e9";
-    }
-
-    // STATUS POMPA
-    pumpText.innerText = pump ? "ON" : "OFF";
-    pumpText.style.color = pump ? "#22c55e" : "#ef4444";
-
-    // MODE OPERASI
-    modeText.innerText = automatic ? "Otomatis" : "Manual";
-
-    // STATUS SISTEM
-    if (level <= 20) {
-
-        system.innerText = "BAHAYA";
-        system.style.color = "#ef4444";
-        alarm.innerText = "ALARM: Air sangat rendah!";
-
-    } else if (level >= 90) {
-
-        system.innerText = "PENUH";
-        system.style.color = "#facc15";
-        alarm.innerText = "ALARM: Air hampir penuh!";
-
-    } else {
-
-        system.innerText = "NORMAL";
-        system.style.color = "#22c55e";
-        alarm.innerText = "Tidak ada alarm";
-    }
+    padding: 25px;
+    color: #64748b;
+    border-top: 1px solid #263b53;
+    font-size: 13px;
 }
 
-// KONTROL POMPA MANUAL
-function manualPump(state) {
-    automatic = false;
-    pump = state;
-    updateDashboard();
-}
-
-// MODE OTOMATIS
-function automaticMode() {
-    automatic = true;
-    updateDashboard();
-}
-
-// MEMBUAT GRAFIK
-function drawChart() {
-
-    const canvas = document.getElementById("chart");
-    const ctx = canvas.getContext("2d");
-
-    const w = canvas.width;
-    const h = canvas.height;
-
-    ctx.clearRect(0, 0, w, h);
-
-    ctx.strokeStyle = "#475569";
-    ctx.lineWidth = 1;
-
-    for (let i = 0; i <= 4; i++) {
-
-        let y = h - (i * h / 4);
-
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
-        ctx.stroke();
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 21px;
     }
 
-    ctx.strokeStyle = "#38bdf8";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-
-    history.forEach((v, i) => {
-
-        let x = i * w / 29;
-        let y = h - (v / 100 * h);
-
-        if (i === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
-        }
-    });
-
-    ctx.stroke();
-}
-
-// SIMULASI SISTEM SETIAP DETIK
-setInterval(function() {
-
-    if (automatic) {
-
-        if (level <= 30) {
-            pump = true;
-        }
-
-        if (level >= 90) {
-            pump = false;
-        }
+    .container {
+        padding: 15px;
     }
 
-    if (pump && level < 100) {
-
-        level += 1;
-
-    } else if (!pump && level > 0) {
-
-        level -= 0.2;
-    }
-
-    level = Math.max(0, Math.min(100, level));
-
-    history.push(level);
-
-    if (history.length > 30) {
-        history.shift();
-    }
-
-    updateDashboard();
-    drawChart();
-
-}, 1000);
-
-// INISIALISASI DASHBOARD
-history = Array(30).fill(level);
-
-updateDashboard();
-drawChart();
-
-
-// PANEL ALARM SCADA
-const alarmPanel = document.createElement("div");
-
-alarmPanel.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 15px 20px;
-    border-radius: 10px;
-    background: #166534;
-    color: white;
-    font-weight: bold;
-    z-index: 9999;
-    box-shadow: 0 4px 12px #0005;
-`;
-
-document.body.appendChild(alarmPanel);
-
-function checkAlarm() {
-
-    if (level <= 20) {
-
-        alarmPanel.style.background = "#dc2626";
-        alarmPanel.textContent = "ALARM! KETINGGIAN AIR RENDAH";
-
-    } else if (level >= 90) {
-
-        alarmPanel.style.background = "#ea580c";
-        alarmPanel.textContent = "PERINGATAN! AIR TERLALU TINGGI";
-
-    } else {
-
-        alarmPanel.style.background = "#166534";
-        alarmPanel.textContent = "SISTEM NORMAL";
+    .grid {
+        grid-template-columns: 1fr;
     }
 }
-
-setInterval(checkAlarm, 1000);
-checkAlarm();
-
-
-// FITUR ALARM SUARA SCADA
-let alarmSoundEnabled = false;
-let audioContext = null;
-
-const soundButton = document.createElement("button");
-
-soundButton.textContent = "Aktifkan Suara Alarm";
-
-soundButton.style.cssText = `
-    position: fixed;
-    bottom: 85px;
-    right: 20px;
-    padding: 12px 16px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    z-index: 9999;
-`;
-
-document.body.appendChild(soundButton);
-
-soundButton.addEventListener("click", async function() {
-
-    const AudioEngine =
-        window.AudioContext || window.webkitAudioContext;
-
-    if (!AudioEngine) {
-        alert("Browser tidak mendukung alarm suara.");
-        return;
-    }
-
-    audioContext = audioContext || new AudioEngine();
-
-    await audioContext.resume();
-
-    alarmSoundEnabled = true;
-
-    soundButton.textContent = "Suara Alarm Aktif";
-});
-
-function playAlarmBeep() {
-
-    if (!alarmSoundEnabled || !audioContext) return;
-
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-
-    oscillator.frequency.value = 880;
-    gain.gain.value = 0.15;
-
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
-
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + 0.3);
-}
-
-setInterval(function() {
-
-    if (level <= 20 || level >= 90) {
-        playAlarmBeep();
-    }
-
-}, 1500);
-
-
-// RIWAYAT AKTIVITAS SCADA
-const eventPanel = document.createElement("div");
-
-eventPanel.innerHTML = `
-    <h2>Riwayat Aktivitas Sistem</h2>
-    <div id="eventLog"></div>
-`;
-
-eventPanel.style.cssText = `
-    margin: 25px 0;
-    padding: 20px;
-    background: #1e293b;
-    color: white;
-    border-radius: 12px;
-`;
-
-document.body.appendChild(eventPanel);
-
-const eventLog = document.getElementById("eventLog");
-
-function addEvent(message) {
-
-    const time = new Date().toLocaleTimeString("id-ID");
-
-    const item = document.createElement("p");
-
-    item.textContent = time + " - " + message;
-
-    item.style.cssText = `
-        padding: 10px;
-        border-bottom: 1px solid #475569;
-        margin: 0;
-    `;
-
-    eventLog.prepend(item);
-
-    while (eventLog.children.length > 20) {
-        eventLog.removeChild(eventLog.lastChild);
-    }
-}
-
-let previousPump = pump;
-let previousLevelStatus = "";
-
-addEvent("Sistem monitoring dimulai");
-
-// MEMANTAU PERUBAHAN AKTIVITAS
-setInterval(function() {
-
-    if (pump !== previousPump) {
-
-        addEvent(
-            pump ? "Pompa menyala (ON)" : "Pompa mati (OFF)"
-        );
-
-        previousPump = pump;
-    }
-
-    let currentStatus = "";
-
-    if (level <= 20) {
-
-        currentStatus = "Air sangat rendah";
-
-    } else if (level >= 90) {
-
-        currentStatus = "Air hampir penuh";
-
-    } else {
-
-        currentStatus = "Normal";
-    }
-
-    if (currentStatus !== previousLevelStatus) {
-
-        addEvent("Status ketinggian air: " + currentStatus);
-
-        previousLevelStatus = currentStatus;
-    }
-
-}, 1000);
-
-</script>
-
-</body>
-</html>
