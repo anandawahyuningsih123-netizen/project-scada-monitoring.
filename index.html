@@ -1,4 +1,12 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCADA Water Monitoring</title>
+
+<style>
 * {
     box-sizing: border-box;
 }
@@ -39,7 +47,7 @@ header p {
 h2 {
     font-size: 20px;
     color: #e2e8f0;
-    margin-top: 30px;
+    margin-top: 25px;
     margin-bottom: 18px;
 }
 
@@ -76,10 +84,6 @@ h2 {
     margin: 12px 0;
 }
 
-#level, #volume {
-    transition: color 0.3s ease;
-}
-
 .status-normal {
     color: #22c55e !important;
 }
@@ -113,6 +117,31 @@ h2 {
     transition: height 0.5s, background-color 0.3s;
 }
 
+.info {
+    color: #94a3b8;
+    font-size: 13px;
+    text-align: center;
+}
+
+.status {
+    font-size: 25px;
+    font-weight: bold;
+    color: #22c55e;
+}
+
+#alarm {
+    color: #facc15;
+    font-weight: bold;
+}
+
+.controls {
+    margin-top: 20px;
+    padding: 20px;
+    background: #111c2e;
+    border: 1px solid #263b53;
+    border-radius: 15px;
+}
+
 button {
     border: none;
     padding: 13px 20px;
@@ -144,24 +173,43 @@ button:hover {
     color: white;
 }
 
-.status {
-    font-size: 25px;
-    font-weight: bold;
-    color: #22c55e;
-}
-
-#alarm {
-    color: #facc15;
-    font-weight: bold;
+.sound {
+    background: #475569;
+    color: white;
 }
 
 canvas {
     display: block;
     width: 100%;
-    height: 200px;
+    height: 220px;
     background: #0b1220;
     border: 1px solid #263b53;
     border-radius: 12px;
+}
+
+.panel {
+    margin-top: 20px;
+    padding: 20px;
+    background: #111c2e;
+    border: 1px solid #263b53;
+    border-radius: 15px;
+}
+
+#alarmPanel {
+    padding: 15px;
+    border-radius: 10px;
+    background: #123b2a;
+    color: #4ade80;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+#history {
+    max-height: 180px;
+    overflow-y: auto;
+    color: #cbd5e1;
+    font-size: 13px;
+    line-height: 1.8;
 }
 
 footer {
@@ -170,6 +218,7 @@ footer {
     color: #64748b;
     border-top: 1px solid #263b53;
     font-size: 13px;
+    margin-top: 30px;
 }
 
 @media (max-width: 600px) {
@@ -185,3 +234,343 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>SCADA WATER MONITORING</h1>
+    <p>Supervisory Control and Data Acquisition - Sistem Monitoring Tandon Air</p>
+</header>
+
+<div class="container">
+
+    <h2>Dashboard Monitoring</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>Ketinggian Air</h3>
+            <div class="value" id="level">65%</div>
+            <div class="tank">
+                <div class="water" id="water"></div>
+            </div>
+            <p class="info">Kapasitas Tandon: 2.000 Liter</p>
+            <p class="info">Volume Air: <strong id="volume">1.300 Liter</strong></p>
+        </div>
+
+        <div class="card">
+            <h3>Status Pompa Air</h3>
+            <div class="value status" id="pump">OFF</div>
+            <p class="info">Mode: <strong id="mode">OTOMATIS</strong></p>
+            <p class="info">Kondisi pompa air saat ini</p>
+        </div>
+
+        <div class="card">
+            <h3>Status Sistem</h3>
+            <div class="value status" id="system">NORMAL</div>
+            <p id="alarm">Tidak ada alarm</p>
+            <p class="info">Monitoring kondisi tandon air</p>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <h2>Kontrol Pompa Air</h2>
+        <button class="on" onclick="manualPump(true)">POMPA ON</button>
+        <button class="off" onclick="manualPump(false)">POMPA OFF</button>
+        <button class="auto" onclick="automaticMode()">MODE OTOMATIS</button>
+        <button class="sound" onclick="enableSound()">AKTIFKAN SUARA ALARM</button>
+        <p class="info" id="soundStatus">Suara alarm belum diaktifkan</p>
+    </div>
+
+    <div class="panel">
+        <h2>Grafik Ketinggian Air</h2>
+        <canvas id="chart"></canvas>
+    </div>
+
+    <div class="panel">
+        <h2>Panel Alarm</h2>
+        <div id="alarmPanel">SISTEM NORMAL - TIDAK ADA GANGGUAN</div>
+    </div>
+
+    <div class="panel">
+        <h2>Riwayat Aktivitas Sistem</h2>
+        <div id="history">Belum ada aktivitas.</div>
+    </div>
+
+</div>
+
+<footer>
+    SCADA Water Monitoring | Sistem Simulasi Monitoring Tandon Air
+</footer>
+
+<script>
+let level = 65;
+let pump = false;
+let automatic = true;
+let soundEnabled = false;
+let alarmInterval = null;
+let historyData = [];
+let previousStatus = "";
+let previousPump = false;
+
+const levelText = document.getElementById("level");
+const volumeText = document.getElementById("volume");
+const water = document.getElementById("water");
+const pumpText = document.getElementById("pump");
+const modeText = document.getElementById("mode");
+const alarm = document.getElementById("alarm");
+const system = document.getElementById("system");
+const alarmPanel = document.getElementById("alarmPanel");
+const historyBox = document.getElementById("history");
+
+function addHistory(message) {
+    const time = new Date().toLocaleTimeString("id-ID");
+    historyData.unshift(time + " - " + message);
+    historyData = historyData.slice(0, 30);
+
+    historyBox.innerHTML = historyData
+        .map(item => `<div>${item}</div>`)
+        .join("");
+}
+
+function updateDashboard() {
+    level = Math.max(0, Math.min(100, level));
+
+    let volume = Math.round((level / 100) * 2000);
+
+    levelText.innerText = level.toFixed(1) + "%";
+    volumeText.innerText = volume.toLocaleString("id-ID") + " Liter";
+
+    water.style.height = level + "%";
+
+    levelText.className = "value";
+    volumeText.className = "";
+    water.style.background = "#0ea5e9";
+
+    if (level <= 20) {
+        levelText.classList.add("status-rendah");
+        volumeText.classList.add("status-rendah");
+        water.style.background = "#ef4444";
+    } else if (level >= 90) {
+        levelText.classList.add("status-penuh");
+        volumeText.classList.add("status-penuh");
+        water.style.background = "#facc15";
+    } else {
+        levelText.classList.add("status-normal");
+        volumeText.classList.add("status-normal");
+    }
+
+    pumpText.innerText = pump ? "ON" : "OFF";
+    pumpText.style.color = pump ? "#22c55e" : "#ef4444";
+
+    modeText.innerText = automatic ? "OTOMATIS" : "MANUAL";
+
+    let currentStatus;
+
+    if (level <= 20) {
+        currentStatus = "RENDAH";
+        system.innerText = "BAHAYA";
+        system.style.color = "#ef4444";
+        alarm.innerText = "PERINGATAN: AIR RENDAH!";
+        alarmPanel.innerText = "ALARM: KETINGGIAN AIR TERLALU RENDAH!";
+        alarmPanel.style.background = "#7f1d1d";
+        alarmPanel.style.color = "#fecaca";
+    } else if (level >= 90) {
+        currentStatus = "PENUH";
+        system.innerText = "PERINGATAN";
+        system.style.color = "#facc15";
+        alarm.innerText = "PERINGATAN: TANDON HAMPIR PENUH!";
+        alarmPanel.innerText = "PERINGATAN: KETINGGIAN AIR TINGGI!";
+        alarmPanel.style.background = "#713f12";
+        alarmPanel.style.color = "#fef08a";
+    } else {
+        currentStatus = "NORMAL";
+        system.innerText = "NORMAL";
+        system.style.color = "#22c55e";
+        alarm.innerText = "Tidak ada alarm";
+        alarmPanel.innerText = "SISTEM NORMAL - TIDAK ADA GANGGUAN";
+        alarmPanel.style.background = "#123b2a";
+        alarmPanel.style.color = "#4ade80";
+    }
+
+    if (currentStatus !== previousStatus) {
+        if (previousStatus !== "") {
+            addHistory("Status air berubah menjadi " + currentStatus);
+        }
+        previousStatus = currentStatus;
+    }
+
+    if (pump !== previousPump) {
+        addHistory("Pompa air " + (pump ? "dinyalakan" : "dimatikan"));
+        previousPump = pump;
+    }
+
+    updateAlarmSound();
+}
+
+function manualPump(state) {
+    automatic = false;
+    pump = state;
+    updateDashboard();
+}
+
+function automaticMode() {
+    automatic = true;
+
+    if (level <= 30) {
+        pump = true;
+    } else if (level >= 90) {
+        pump = false;
+    }
+
+    updateDashboard();
+    addHistory("Mode otomatis diaktifkan");
+}
+
+function drawChart() {
+    const canvas = document.getElementById("chart");
+    const ctx = canvas.getContext("2d");
+
+    const width = canvas.clientWidth;
+    const height = 220;
+
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = width * ratio;
+    canvas.height = height * ratio;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+    ctx.clearRect(0, 0, width, height);
+
+    ctx.strokeStyle = "#263b53";
+    ctx.lineWidth = 1;
+
+    for (let i = 0; i <= 4; i++) {
+        let y = 15 + (i * 45);
+
+        ctx.beginPath();
+        ctx.moveTo(35, y);
+        ctx.lineTo(width - 10, y);
+        ctx.stroke();
+
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "11px Arial";
+        ctx.fillText((100 - i * 25) + "%", 5, y + 4);
+    }
+
+    if (historyData.length < 2) return;
+
+    ctx.beginPath();
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 3;
+
+    historyData.forEach((value, index) => {
+        let x = 35 + (index / 29) * (width - 50);
+        let y = 15 + ((100 - value) / 100) * 180;
+
+        if (index === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    });
+
+    ctx.stroke();
+}
+
+function playAlarmBeep() {
+    if (!soundEnabled) return;
+
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+
+        const audio = new AudioContext();
+        const oscillator = audio.createOscillator();
+        const gain = audio.createGain();
+
+        oscillator.connect(gain);
+        gain.connect(audio.destination);
+
+        oscillator.frequency.value = 800;
+        gain.gain.value = 0.15;
+
+        oscillator.start();
+
+        setTimeout(() => {
+            oscillator.stop();
+            audio.close();
+        }, 300);
+    } catch (error) {
+        console.log("Audio tidak tersedia");
+    }
+}
+
+function updateAlarmSound() {
+    const danger = level <= 20 || level >= 90;
+
+    if (danger && soundEnabled) {
+        if (!alarmInterval) {
+            playAlarmBeep();
+            alarmInterval = setInterval(playAlarmBeep, 1500);
+        }
+    } else {
+        clearInterval(alarmInterval);
+        alarmInterval = null;
+    }
+}
+
+function enableSound() {
+    soundEnabled = true;
+    document.getElementById("soundStatus").innerText =
+        "Suara alarm aktif";
+
+    updateAlarmSound();
+    addHistory("Suara alarm diaktifkan");
+}
+
+// Simulasi awal grafik
+for (let i = 0; i < 30; i++) {
+    historyData.push(level);
+}
+
+// Proses simulasi setiap detik
+setInterval(() => {
+
+    if (automatic) {
+        if (level <= 30) {
+            pump = true;
+        } else if (level >= 90) {
+            pump = false;
+        }
+    }
+
+    if (pump) {
+        level += 1;
+    } else {
+        level -= 0.2;
+    }
+
+    level = Math.max(0, Math.min(100, level));
+
+    historyData.push(level);
+
+    if (historyData.length > 30) {
+        historyData.shift();
+    }
+
+    updateDashboard();
+    drawChart();
+
+}, 1000);
+
+window.addEventListener("resize", drawChart);
+
+updateDashboard();
+drawChart();
+</script>
+
+</body>
+</html>
