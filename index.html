@@ -449,6 +449,14 @@ while (alarmHistory.children.length > 10) {
         addHistory("Koneksi sistem terputus");
     }
 }
+    let audioContext;
+
+function enableAlarmSound() {
+    audioContext = new AudioContext();
+    audioContext.resume();
+
+    alert("Suara alarm berhasil diaktifkan!");
+}
    function playAlarm(type) {
     const audio = new AudioContext();
     const oscillator = audio.createOscillator();
