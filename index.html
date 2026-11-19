@@ -629,9 +629,8 @@ function recordAlarm(message) {
 
     const time = new Date().toLocaleTimeString("id-ID");
     const alarmHistory = document.getElementById("alarmHistory");
-  
 
-    if (lastAlarm === "") return;
+    if (message === "") return;
 
     if (message === "✓ Sistem berjalan normal") {
         alarmHistory.innerHTML =
@@ -642,9 +641,10 @@ function recordAlarm(message) {
             "<p>[" + time + "] " + message + "</p>" +
             alarmHistory.innerHTML;
     }
-}
-while (alarmHistory.children.length > 10) {
-    alarmHistory.removeChild(alarmHistory.lastElementChild);
+
+    while (alarmHistory.children.length > 10) {
+        alarmHistory.removeChild(alarmHistory.lastElementChild);
+    }
 }
     function setConnection(status) {
     const connection = document.getElementById("connection");
