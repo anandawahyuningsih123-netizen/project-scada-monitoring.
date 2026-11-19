@@ -476,6 +476,13 @@ canvas {
 
 <div class="panel">
     <h2>Grafik Ketinggian Air</h2>
+
+    <div style="display:flex; gap:25px; flex-wrap:wrap; margin-bottom:18px; font-size:13px;">
+        <span style="color:#38bdf8;">● Gedung A</span>
+        <span style="color:#34d399;">● Gedung B</span>
+        <span style="color:#facc15;">● Gedung C</span>
+    </div>
+
     <canvas id="chart"></canvas>
 </div>
 
@@ -497,7 +504,9 @@ let levelC = 65;
 
 let pump = false;
 let automatic = true;
-let data = [];
+let dataA = [];
+let dataB = [];
+let dataC = [];
 let activities = [];
 
 const tanks = [
@@ -711,7 +720,6 @@ function automaticMode() {
     updateDashboard();
     addHistory("Mode otomatis diaktifkan");
 }
-
 function drawChart() {
     const canvas = document.getElementById("chart");
     const ctx = canvas.getContext("2d");
@@ -722,12 +730,49 @@ function drawChart() {
 
     canvas.width = width * ratio;
     canvas.height = height * ratio;
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     ctx.clearRect(0, 0, width, height);
 
     ctx.strokeStyle = "#334155";
 
+    for (let i = 0; i <= 4; i++) {
+        let y = 10 + i * 45;
+
+        ctx.beginPath();
+        ctx.moveTo(35, y);
+        ctx.lineTo(width - 10, y);
+        ctx.stroke();
+
+        ctx.fillStyle = "#94a3b8";
+        ctx.fillText((100 - i * 25) + "%", 3, y + 4);
+    }
+
+    function drawLine(values, color) {
+        if (values.length < 2) return;
+
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+
+        values.forEach((value, i) => {
+            let x = 35 + (i / 29) * (width - 50);
+            let y = 10 + ((100 - value) / 100) * 180;
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        });
+
+        ctx.stroke();
+    }
+
+    drawLine(dataA, "#38bdf8");
+    drawLine(dataB, "#34d399");
+    drawLine(dataC, "#facc15");
+}
     for (let i = 0; i <= 4; i++) {
         let y = 10 + i * 45;
         ctx.beginPath();
@@ -757,7 +802,9 @@ function drawChart() {
 }
 
 for (let i = 0; i < 30; i++) {
-    data.push(levelA);
+    dataA.push(levelA);
+    dataB.push(levelB);
+    dataC.push(levelC);
 }
 
 setInterval(() => {
@@ -786,12 +833,13 @@ setInterval(() => {
     levelB = Math.max(0, Math.min(100, levelB));
     levelC = Math.max(0, Math.min(100, levelC));
 
-    data.push(levelA);
+   dataA.push(levelA);
+dataB.push(levelB);
+dataC.push(levelC);
 
-    if (data.length > 30) {
-        data.shift();
-    }
-
+if (dataA.length > 30) dataA.shift();
+if (dataB.length > 30) dataB.shift();
+if (dataC.length > 30) dataC.shift();
     updateDashboard();
     drawChart();
 
