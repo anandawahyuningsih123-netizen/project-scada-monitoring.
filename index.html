@@ -224,7 +224,26 @@ button:nth-of-type(3) {
     transition: height 0.8s ease;
     z-index: 1;
 }
+.water::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: -50%;
+    width: 200%;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    animation: waterWave 4s linear infinite;
+}
 
+@keyframes waterWave {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(25%);
+    }
+}
 /* EFEK CAHAYA TANDON */
 .tank::after {
     content: "";
