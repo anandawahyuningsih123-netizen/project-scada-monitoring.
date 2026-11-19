@@ -57,6 +57,28 @@ header {
 .connection-status {
     color: #cbd5e1;
     font-size: 13px;
+    background: #0b1b30;
+    border: 1px solid #285071;
+    border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: 0 0 15px #0ea5e922;
+}
+
+
+    #connection {
+    animation: onlinePulse 2s infinite;
+}
+
+@keyframes onlinePulse {
+    0%, 100% {
+        opacity: 1;
+        text-shadow: 0 0 10px #34d399;
+    }
+
+    50% {
+        opacity: 0.5;
+        text-shadow: 0 0 2px #34d399;
+    }
 }
 .container {
     max-width: 1400px;
