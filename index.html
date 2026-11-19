@@ -463,6 +463,7 @@ canvas {
     <div class="card">
     <h3>Tandon Gedung A</h3>
     <div class="value" id="levelA">65%</div>
+        <div class="tank-status" id="statusA">NORMAL</div>
 
     <div class="tank">
         <div class="water" id="waterA"></div>
@@ -475,6 +476,7 @@ canvas {
 <div class="card">
     <h3>Tandon Gedung B</h3>
     <div class="value" id="levelB">65%</div>
+    <div class="tank-status" id="statusB">NORMAL</div>
 
     <div class="tank">
         <div class="water" id="waterB"></div>
@@ -487,6 +489,8 @@ canvas {
 <div class="card">
     <h3>Tandon Gedung C</h3>
     <div class="value" id="levelC">65%</div>
+    <div class="value" id="levelC">65%</div>
+    
 
     <div class="tank">
         <div class="water" id="waterC"></div>
@@ -656,6 +660,11 @@ document.getElementById("totalVolume").innerText =
 
 document.getElementById("averageLevel").innerText =
     averageLevel.toFixed(1) + "%";
+    const statusElements = [
+    document.getElementById("statusA"),
+    document.getElementById("statusB"),
+    document.getElementById("statusC")
+];
 
     levels.forEach((level, index) => {
 
@@ -671,14 +680,21 @@ document.getElementById("averageLevel").innerText =
 
         tanks[index].water.style.height = level + "%";
 
-        if (level <= 20) {
-            tanks[index].water.style.background = "#ef4444";
-        } else if (level >= 90) {
-            tanks[index].water.style.background = "#facc15";
-        } else {
-            tanks[index].water.style.background = "#0ea5e9";
-        }
-    });
+       if (level <= 20) {
+    tanks[index].water.style.background = "#ef4444";
+    statusElements[index].innerText = "DANGER";
+    statusElements[index].className = "tank-status danger";
+
+} else if (level >= 90) {
+    tanks[index].water.style.background = "#facc15";
+    statusElements[index].innerText = "WARNING";
+    statusElements[index].className = "tank-status warning";
+
+} else {
+    tanks[index].water.style.background = "#0ea5e9";
+    statusElements[index].innerText = "NORMAL";
+    statusElements[index].className = "tank-status";
+}
 
     pumpText.innerText = pump ? "ON" : "OFF";
     pumpText.style.color = pump ? "#22c55e" : "#ef4444";
