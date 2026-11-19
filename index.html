@@ -146,15 +146,33 @@ button {
     transition: 0.3s ease;
     box-shadow: 0 4px 12px #0284c733;
 }
+    .pump-panel button {
+    min-width: 145px;
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    box-shadow: 0 0 12px #38bdf855;
+}
     button:hover {
     transform: translateY(-3px);
     box-shadow: 0 0 18px #38bdf877;
     background: linear-gradient(135deg, #0284c7, #0ea5e9);
 }
+    .pump-panel button:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 0 22px #38bdf8aa;
+    filter: brightness(1.15);
+}
 
 button:active {
     transform: scale(0.97);
     box-shadow: 0 0 15px #38bdf8;
+}
+    .pump-panel button:active {
+    transform: scale(0.94);
+    box-shadow: 0 0 25px #38bdf8;
+    filter: brightness(1.2);
 }
 button:first-of-type {
     background: #059669;
