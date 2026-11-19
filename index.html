@@ -124,8 +124,7 @@ h2 {
     background: #0b1b30;
     border: 1px solid #285071;
     border-radius: 10px;
-    text-shadow: 0 0 12px #38bdf855;
-}
+    text-shadow: 0 0 8px #38bdf8, 0 0 18px #0ea5e9;
 }
 .card p {
     font-size: 13px;
@@ -338,10 +337,19 @@ canvas {
         padding: 16px;
     }
 
-    .card {
-        padding: 16px;
-    }
-
+   .card {
+    padding: 16px;
+    background: linear-gradient(145deg, #142b45, #0b1b30);
+    border: 1px solid #285071;
+    border-radius: 14px;
+    box-shadow: 0 0 15px #0ea5e922;
+    transition: 0.3s ease;
+}
+    .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 22px #38bdf855;
+    border-color: #38bdf8;
+}
     .grid {
         grid-template-columns: 1fr;
     }
