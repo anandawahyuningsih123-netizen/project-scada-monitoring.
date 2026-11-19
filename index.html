@@ -403,9 +403,13 @@ canvas {
     </div>
 
     <div class="connection-status">
-        Status Sistem:
-        <span id="connection">● ONLINE</span>
-    </div>
+    Status Sistem:
+    <span id="connection">● ONLINE</span>
+
+    <p id="clock" style="margin-top:12px; color:#38bdf8;">
+        Waktu: Memuat...
+    </p>
+</div>
 </header>
 <div class="container">
 
@@ -905,6 +909,18 @@ window.addEventListener("resize", drawChart);
 
 updateDashboard();
 drawChart();
+    function updateClock() {
+    const now = new Date();
+
+    document.getElementById("clock").innerText =
+        "Waktu: " + now.toLocaleString("id-ID", {
+            dateStyle: "full",
+            timeStyle: "medium"
+        });
+}
+
+updateClock();
+setInterval(updateClock, 1000);
 </script>
 
 </body>
