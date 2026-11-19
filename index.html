@@ -454,6 +454,25 @@ canvas {
     <button class="off" onclick="manualPump(false)">POMPA OFF</button>
     <button class="auto" onclick="automaticMode()">MODE OTOMATIS</button>
 </div>
+    <div class="panel">
+    <h2>Simulasi Pengujian Tandon</h2>
+
+    <button onclick="testTank('A', 10)">GEDUNG A - BAHAYA</button>
+    <button onclick="testTank('A', 95)">GEDUNG A - PERINGATAN</button>
+    <button onclick="testTank('A', 65)">GEDUNG A - NORMAL</button>
+
+    <br>
+
+    <button onclick="testTank('B', 10)">GEDUNG B - BAHAYA</button>
+    <button onclick="testTank('B', 95)">GEDUNG B - PERINGATAN</button>
+    <button onclick="testTank('B', 65)">GEDUNG B - NORMAL</button>
+
+    <br>
+
+    <button onclick="testTank('C', 10)">GEDUNG C - BAHAYA</button>
+    <button onclick="testTank('C', 95)">GEDUNG C - PERINGATAN</button>
+    <button onclick="testTank('C', 65)">GEDUNG C - NORMAL</button>
+</div>
 
 <div class="panel">
     <h2>Grafik Ketinggian Air</h2>
@@ -649,6 +668,26 @@ function checkAlarmSound(type) {
     } else if (type === "warning") {
         playAlarm("warning");
     }
+}
+    function testTank(building, value) {
+
+    automatic = false;
+    pump = false;
+
+    if (building === "A") {
+        levelA = value;
+    } else if (building === "B") {
+        levelB = value;
+    } else if (building === "C") {
+        levelC = value;
+    }
+
+    updateDashboard();
+
+    addHistory(
+        "Pengujian Gedung " + building +
+        " - Level air " + value + "%"
+    );
 }
 
 function manualPump(state) {
