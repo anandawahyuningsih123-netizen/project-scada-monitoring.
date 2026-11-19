@@ -381,6 +381,27 @@ canvas {
 <div class="container">
 
 <h2>Dashboard Monitoring</h2>
+    <div class="grid">
+
+    <div class="card">
+        <h3>Total Kapasitas</h3>
+        <div class="value">6.000 Liter</div>
+        <p>Kapasitas 3 tandon</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Volume Air</h3>
+        <div class="value" id="totalVolume">3.900 Liter</div>
+        <p>Jumlah air seluruh gedung</p>
+    </div>
+
+    <div class="card">
+        <h3>Rata-rata Ketinggian</h3>
+        <div class="value" id="averageLevel">65%</div>
+        <p>Rata-rata ketiga tandon</p>
+    </div>
+
+</div>
 
 <div class="grid">
 
@@ -548,6 +569,14 @@ function addHistory(message) {
 function updateDashboard() {
 
     const levels = [levelA, levelB, levelC];
+    const totalVolume = levels.reduce((total, level) => total + level * 20, 0);
+const averageLevel = levels.reduce((total, level) => total + level, 0) / 3;
+
+document.getElementById("totalVolume").innerText =
+    Math.round(totalVolume).toLocaleString("id-ID") + " Liter";
+
+document.getElementById("averageLevel").innerText =
+    averageLevel.toFixed(1) + "%";
 
     levels.forEach((level, index) => {
 
