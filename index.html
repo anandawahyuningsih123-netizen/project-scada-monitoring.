@@ -221,6 +221,35 @@ button:nth-of-type(3) {
 canvas {
     max-width: 100%;
 }
+    .chart-legend {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 14px;
+    background: #0b1b30;
+    border: 1px solid #294563;
+    border-radius: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.legend-a { background: #38bdf8; }
+.legend-b { background: #34d399; }
+.legend-c { background: #facc15; }
 .panel {
     background: linear-gradient(145deg, #172b45, #101d30);
     border: 1px solid #294563;
@@ -503,6 +532,30 @@ canvas {
         <span style="color:#34d399;">● Gedung B</span>
         <span style="color:#facc15;">● Gedung C</span>
     </div>
+    <h3 style="color:#38bdf8; margin-bottom:15px;">
+    Grafik Ketinggian Air 3 Gedung
+</h3>
+<p style="color:#94a3b8; font-size:12px; margin-bottom:15px;">
+    Pemantauan perubahan level air secara real-time
+</p>
+    <div class="chart-legend">
+
+    <div class="legend-item">
+        <span class="legend-color legend-a"></span>
+        Tandon Gedung A
+    </div>
+
+    <div class="legend-item">
+        <span class="legend-color legend-b"></span>
+        Tandon Gedung B
+    </div>
+
+    <div class="legend-item">
+        <span class="legend-color legend-c"></span>
+        Tandon Gedung C
+    </div>
+
+</div>
 
     <canvas id="chart"></canvas>
 </div>
