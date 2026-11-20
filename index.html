@@ -154,6 +154,23 @@ button {
     letter-spacing: 1px;
     box-shadow: 0 0 12px #38bdf855;
 }
+    .sim-danger {
+    background: linear-gradient(145deg, #dc2626, #991b1b);
+    border: 1px solid #ef4444;
+    box-shadow: 0 0 12px #ef444455;
+}
+
+.sim-warning {
+    background: linear-gradient(145deg, #f59e0b, #b45309);
+    border: 1px solid #fbbf24;
+    box-shadow: 0 0 12px #f59e0b55;
+}
+
+.sim-normal {
+    background: linear-gradient(145deg, #16a34a, #166534);
+    border: 1px solid #22c55e;
+    box-shadow: 0 0 12px #22c55e55;
+}
     button:hover {
     transform: translateY(-3px);
     box-shadow: 0 0 18px #38bdf877;
@@ -615,21 +632,21 @@ canvas {
     <div class="panel">
     <h2>Simulasi Pengujian Tandon</h2>
 
-    <button onclick="testTank('A', 10)">GEDUNG A - BAHAYA</button>
-    <button onclick="testTank('A', 95)">GEDUNG A - PERINGATAN</button>
-    <button onclick="testTank('A', 65)">GEDUNG A - NORMAL</button>
+   <button class="sim-danger" onclick="testTank('A', 10)">GEDUNG A - BAHAYA</button>
+<button class="sim-warning" onclick="testTank('A', 95)">GEDUNG A - PERINGATAN</button>
+<button class="sim-normal" onclick="testTank('A', 65)">GEDUNG A - NORMAL</button>
 
-    <br>
+<br>
 
-    <button onclick="testTank('B', 10)">GEDUNG B - BAHAYA</button>
-    <button onclick="testTank('B', 95)">GEDUNG B - PERINGATAN</button>
-    <button onclick="testTank('B', 65)">GEDUNG B - NORMAL</button>
+<button class="sim-danger" onclick="testTank('B', 10)">GEDUNG B - BAHAYA</button>
+<button class="sim-warning" onclick="testTank('B', 95)">GEDUNG B - PERINGATAN</button>
+<button class="sim-normal" onclick="testTank('B', 65)">GEDUNG B - NORMAL</button>
 
-    <br>
+<br>
 
-    <button onclick="testTank('C', 10)">GEDUNG C - BAHAYA</button>
-    <button onclick="testTank('C', 95)">GEDUNG C - PERINGATAN</button>
-    <button onclick="testTank('C', 65)">GEDUNG C - NORMAL</button>
+<button class="sim-danger" onclick="testTank('C', 10)">GEDUNG C - BAHAYA</button>
+<button class="sim-warning" onclick="testTank('C', 95)">GEDUNG C - PERINGATAN</button>
+<button class="sim-normal" onclick="testTank('C', 65)">GEDUNG C - NORMAL</button>
 </div>
 
 <div class="panel">
