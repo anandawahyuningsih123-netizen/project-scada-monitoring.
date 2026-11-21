@@ -379,31 +379,45 @@ body {
 
         <div class="card">
             <p>Total Lampu</p>
-            <h2>30</h2>
+             <h2 id="totalLamp">30</h2>
             <small>6 Area Kampus</small>
         </div>
 
         <div class="card">
             <p>Lampu Menyala</p>
-            <h2>20</h2>
+            <h2 id="lampOn">25</h2>
             <small>Status ON</small>
         </div>
 
         <div class="card">
             <p>Lampu Mati</p>
-            <h2>9</h2>
+            <h2 id="lampOff">4</h2>
             <small>Status OFF</small>
         </div>
 
         <div class="card">
             <p>Gangguan</p>
-            <h2>1</h2>
+            <h2 id="lampError">1</h2>
             <small>Perlu pemeriksaan</small>
         </div>
 
     </section>
 
-   
+ <section class="card" style="margin-bottom: 25px;">
+    <h3 style="margin-bottom: 15px;">Mode Pengendalian</h3>
+
+    <button class="control-btn btn-on" onclick="setMode('AUTO')">
+        MODE AUTO
+    </button>
+
+    <button class="control-btn btn-off" onclick="setMode('MANUAL')">
+        MODE MANUAL
+    </button>
+
+    <p id="modeStatus" style="margin-top: 12px; color: #38bdf8;">
+        Mode Aktif: MANUAL
+    </p>
+</section>  
 <section id="area">
 
     <h2 class="section-title">
@@ -525,22 +539,60 @@ function renderLampMonitoring() {
 
     container.innerHTML = html;
 }
+    let controlMode = "MANUAL";
+
+
+function setMode(mode) {
+    controlMode = mode;
+
+    document.getElementById("modeStatus").textContent =
+        "Mode Aktif: " + mode;
+
+    if (mode === "AUTO") {
+        lampData.forEach(lamp => {
+            if (lamp.status !== "GANGGUAN") {
+                lamp.status = "ON";
+            }
+        });
+
+        alert("Mode AUTO aktif. Semua lampu normal dinyalakan.");
+    }
+
+    renderLampMonitoring();
+    updateSummary();
+}
 
 function controlLamp(id, command) {
     const lamp = lampData.find(item => item.id === id);
 
     if (!lamp) return;
+    if (controlMode !== "MANUAL") {
+    alert("Kontrol lampu hanya dapat digunakan pada mode MANUAL!");
+    return;
+}
 
     if (lamp.status === "GANGGUAN") {
         alert("Lampu mengalami gangguan!");
         return;
     }
-
-    lamp.status = command;
-    renderLampMonitoring();
-}
+lamp.status = command;
 
 renderLampMonitoring();
+updateSummary();
+}
+    function updateSummary() {
+    const total = lampData.length;
+    const on = lampData.filter(lamp => lamp.status === "ON").length;
+    const off = lampData.filter(lamp => lamp.status === "OFF").length;
+    const error = lampData.filter(lamp => lamp.status === "GANGGUAN").length;
+
+    document.getElementById("totalLamp").textContent = total;
+    document.getElementById("lampOn").textContent = on;
+    document.getElementById("lampOff").textContent = off;
+    document.getElementById("lampError").textContent = error;
+}
+renderLampMonitoring();
+    updateSummary();
 
 
 </script>
