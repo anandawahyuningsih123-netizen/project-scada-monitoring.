@@ -200,6 +200,86 @@ body {
     border-radius: 20px;
     font-size: 11px;
 }
+    
+/* TAMPILAN MONITORING LAMPU */
+.lamp-item {
+    background: #0e1b2e;
+    border: 1px solid #294563;
+    border-radius: 10px;
+    padding: 13px;
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.lamp-name {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.lamp-location {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 5px;
+    margin-bottom: 7px;
+}
+
+.lamp-status {
+    font-size: 10px;
+    font-weight: bold;
+    padding: 6px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.lamp-on {
+    background: #064e3b;
+    color: #34d399;
+}
+
+.lamp-off {
+    background: #334155;
+    color: #cbd5e1;
+}
+
+.lamp-error {
+    background: #7f1d1d;
+    color: #fca5a5;
+}
+
+    
+/* TOMBOL KONTROL LAMPU */
+
+.lamp-controls {
+    display: flex;
+    gap: 6px;
+}
+
+.control-btn {
+    border: none;
+    padding: 7px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.btn-on {
+    background: #065f46;
+    color: #6ee7b7;
+}
+
+.btn-off {
+    background: #334155;
+    color: #e2e8f0;
+}
+
+.control-btn:hover {
+    filter: brightness(1.3);
+}
+
 
 /* RESPONSIVE */
 @media (max-width: 1000px) {
@@ -323,59 +403,20 @@ body {
 
     </section>
 
-    <section id="area">
+   
+<section id="area">
 
-        <h2 class="section-title">
-            Monitoring Area Kampus
-        </h2>
+    <h2 class="section-title">
+        Monitoring Lampu Kampus
+    </h2>
 
-        <div class="area-grid">
+    <div class="area-grid" id="lampMonitoring">
 
-            <div class="area-card">
-                <h3>Gedung Perkuliahan</h3>
-                <p>Ruang kelas, lorong, dan tangga</p>
-                <div class="area-number">8 Lampu</div>
-                <span class="status">Monitoring Aktif</span>
-            </div>
+    </div>
 
-            <div class="area-card">
-                <h3>Laboratorium</h3>
-                <p>Laboratorium komputer dan praktikum</p>
-                <div class="area-number">5 Lampu</div>
-                <span class="status">Monitoring Aktif</span>
-            </div>
+</section>
 
-            <div class="area-card">
-                <h3>Perpustakaan</h3>
-                <p>Ruang baca dan lorong</p>
-                <div class="area-number">4 Lampu</div>
-                <span class="status">Monitoring Aktif</span>
-            </div>
 
-            <div class="area-card">
-                <h3>Area Parkir</h3>
-                <p>Parkiran motor dan mobil</p>
-                <div class="area-number">5 Lampu</div>
-                <span class="status">Monitoring Aktif</span>
-            </div>
-
-            <div class="area-card">
-                <h3>Jalan dan Koridor Kampus</h3>
-                <p>Jalan, taman, dan jalur pejalan kaki</p>
-                <div class="area-number">5 Lampu</div>
-                <span class="status">Monitoring Aktif</span>
-            </div>
-
-            <div class="area-card">
-                <h3>Gedung Administrasi</h3>
-                <p>Ruang dosen dan kantor administrasi</p>
-                <div class="area-number">3 Lampu</div>
-                <span class="status">Monitoring Aktif</span>
-            </div>
-
-        </div>
-
-    </section>
 
 </main>
 
@@ -394,6 +435,113 @@ function updateClock() {
 
 updateClock();
 setInterval(updateClock, 1000);
+
+// DATA SIMULASI LAMPU
+
+const campusAreas = [
+    {
+        name: "Gedung Perkuliahan",
+        lamps: 8
+    },
+    {
+        name: "Laboratorium",
+        lamps: 5
+    },
+    {
+        name: "Perpustakaan",
+        lamps: 4
+    },
+    {
+        name: "Area Parkir",
+        lamps: 5
+    },
+    {
+        name: "Jalan dan Koridor Kampus",
+        lamps: 5
+    },
+    {
+        name: "Gedung Administrasi",
+        lamps: 3
+    }
+];
+
+
+
+const lampData = [];
+let lampId = 0;
+
+campusAreas.forEach(area => {
+    for (let i = 1; i <= area.lamps; i++) {
+        lampId++;
+
+        let status = "ON";
+
+        if ([10, 18, 25, 28].includes(lampId)) status = "OFF";
+        if (lampId === 30) status = "GANGGUAN";
+
+        lampData.push({
+            id: lampId,
+            name: "Lampu " + String(i).padStart(2, "0"),
+            area: area.name,
+            status: status
+        });
+    }
+});
+
+function renderLampMonitoring() {
+    const container = document.getElementById("lampMonitoring");
+    let html = "";
+
+    campusAreas.forEach(area => {
+        html += `<div class="area-card">
+            <h3>${area.name}</h3>
+            <p>Monitoring dan kontrol lampu</p>`;
+
+        const lamps = lampData.filter(lamp => lamp.area === area.name);
+
+        lamps.forEach(lamp => {
+            let statusClass = "lamp-on";
+
+            if (lamp.status === "OFF") statusClass = "lamp-off";
+            if (lamp.status === "GANGGUAN") statusClass = "lamp-error";
+
+            html += `
+                <div class="lamp-item">
+                    <div>
+                        <div class="lamp-name">${lamp.name}</div>
+                        <div class="lamp-location">ID: L-${String(lamp.id).padStart(2, "0")}</div>
+                        <span class="lamp-status ${statusClass}">${lamp.status}</span>
+                    </div>
+
+                    <div class="lamp-controls">
+                        <button class="control-btn btn-on" onclick="controlLamp(${lamp.id}, 'ON')">ON</button>
+                        <button class="control-btn btn-off" onclick="controlLamp(${lamp.id}, 'OFF')">OFF</button>
+                    </div>
+                </div>`;
+        });
+
+        html += `</div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+function controlLamp(id, command) {
+    const lamp = lampData.find(item => item.id === id);
+
+    if (!lamp) return;
+
+    if (lamp.status === "GANGGUAN") {
+        alert("Lampu mengalami gangguan!");
+        return;
+    }
+
+    lamp.status = command;
+    renderLampMonitoring();
+}
+
+renderLampMonitoring();
+
 
 </script>
 
