@@ -418,16 +418,45 @@ body {
         Mode Aktif: MANUAL
     </p>
 </section>  
-<section id="area">
-
-    <h2 class="section-title">
-        Monitoring Lampu Kampus
-    </h2>
-
-    <div class="area-grid" id="lampMonitoring">
-
+<section id="grafik" class="card" style="margin-top: 25px;">
+    <h2 class="section-title">Grafik Monitoring Lampu</h2>
+    <canvas id="lampChart"></canvas>
+    <section id="alarm" class="card" style="margin-top: 25px;">
+    <h2 class="section-title">Alarm Gangguan Lampu</h2>
+    <div id="alarmList"></div>
+        <section id="riwayat" class="card" style="margin-top: 25px;">
+    <h2 class="section-title">Riwayat Aktivitas</h2>
+    <div id="activityLog">
+        <p style="color: #94a3b8;">Belum ada aktivitas.</p>
     </div>
+</section>
+        <section id="informasi" class="card" style="margin-top: 25px;">
+    <h2 class="section-title">Informasi Sistem</h2>
 
+    <p style="margin-bottom: 10px;">
+        <strong>Nama Sistem:</strong> SCADA Campus Lighting Control
+    </p>
+
+    <p style="margin-bottom: 10px;">
+        <strong>Lokasi:</strong> Universitas Pamulang PSDKU Kota Serang
+    </p>
+
+    <p style="margin-bottom: 10px;">
+        <strong>Jumlah Area:</strong> 6 Area Kampus
+    </p>
+
+    <p style="margin-bottom: 10px;">
+        <strong>Total Lampu:</strong> 30 Unit
+    </p>
+
+    <p style="margin-bottom: 10px;">
+        <strong>Metode:</strong> Simulasi Monitoring dan Pengendalian Berbasis Web
+    </p>
+
+    <p>
+        <strong>Status Sistem:</strong>
+        <span style="color: #34d399;">ONLINE (SIMULASI)</span>
+    </p>
 </section>
 
 
@@ -560,6 +589,7 @@ function setMode(mode) {
 
     renderLampMonitoring();
     updateSummary();
+    updateLampChart();
 }
 
 function controlLamp(id, command) {
@@ -576,9 +606,13 @@ function controlLamp(id, command) {
         return;
     }
 lamp.status = command;
-
+    addActivity(
+    `${lamp.name} di ${lamp.area} diubah menjadi ${command}`
+);
 renderLampMonitoring();
 updateSummary();
+updateLampChart();
+    updateAlarm();
 }
     function updateSummary() {
     const total = lampData.length;
@@ -591,6 +625,109 @@ updateSummary();
     document.getElementById("lampOff").textContent = off;
     document.getElementById("lampError").textContent = error;
 }
+    
+function updateAlarm() {
+    const alarmList = document.getElementById("alarmList");
+
+    const faultyLamps = lampData.filter(
+        lamp => lamp.status === "GANGGUAN"
+    );
+
+    if (faultyLamps.length === 0) {
+        alarmList.innerHTML = `
+            <p style="color: #34d399;">
+                Tidak ada gangguan lampu.
+            </p>`;
+        return;
+    }
+
+    alarmList.innerHTML = faultyLamps.map(lamp => `
+        <div style="
+            background: #451a1a;
+            border: 1px solid #ef4444;
+            padding: 13px;
+            border-radius: 9px;
+            margin-bottom: 10px;
+            color: #fca5a5;
+        ">
+            <strong>ALARM GANGGUAN</strong>
+            <p>${lamp.name} - ${lamp.area}</p>
+            <small>ID: L-${String(lamp.id).padStart(2, "0")}</small>
+        </div>
+    `).join("");
+}
+
+updateAlarm();
+    
+function addActivity(message) {
+    const activityLog = document.getElementById("activityLog");
+
+    const time = new Date().toLocaleTimeString("id-ID");
+
+    const entry = document.createElement("div");
+
+    entry.style.cssText = `
+        background: #0e1b2e;
+        border: 1px solid #294563;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        font-size: 12px;
+    `;
+
+    entry.innerHTML = `
+        <span style="color: #38bdf8;">${time}</span>
+        <p style="margin-top: 5px;">${message}</p>
+    `;
+
+    activityLog.prepend(entry);
+}
+
+
+    
+let lampChart;
+
+function createLampChart() {
+    const ctx = document.getElementById("lampChart");
+
+    lampChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: ["Menyala", "Mati", "Gangguan"],
+            datasets: [{
+                data: [25, 4, 1],
+                backgroundColor: [
+                    "#34d399",
+                    "#64748b",
+                    "#ef4444"
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#e2e8f0"
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateLampChart() {
+    const on = lampData.filter(lamp => lamp.status === "ON").length;
+    const off = lampData.filter(lamp => lamp.status === "OFF").length;
+    const error = lampData.filter(lamp => lamp.status === "GANGGUAN").length;
+
+    lampChart.data.datasets[0].data = [on, off, error];
+    lampChart.update();
+}
+
+createLampChart();
+
 renderLampMonitoring();
     updateSummary();
 
