@@ -1190,6 +1190,14 @@ function checkRoomEvents() {
 /* NOTIFIKASI ALARM */
 
 function showAlarmNotification(room) {
+    // SUARA ALARM
+const alarmSound = new Audio(
+    "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
+);
+
+alarmSound.play().catch(error => {
+    console.log("Suara alarm tidak dapat diputar:", error);
+});
     const toast = document.getElementById("alarmToast");
     const message = document.getElementById("alarmToastMessage");
 
