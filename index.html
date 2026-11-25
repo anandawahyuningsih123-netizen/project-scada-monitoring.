@@ -786,7 +786,33 @@ footer {
                     <canvas id="energyChart"></canvas>
                 </div>
             </div>
+<div class="chart-grid">
 
+    <!-- GRAFIK 1 -->
+    <div class="card chart-card">
+        <h3>Distribusi Status Lampu</h3>
+        <div class="chart-wrap">
+            <canvas id="statusChart"></canvas>
+        </div>
+    </div>
+
+    <!-- GRAFIK 2 -->
+    <div class="card chart-card">
+        <h3>Konsumsi Energi Penerangan</h3>
+        <div class="chart-wrap">
+            <canvas id="energyChart"></canvas>
+        </div>
+    </div>
+
+    <!-- GRAFIK 3: TAMBAHAN -->
+    <div class="card chart-card">
+        <h3>Statistik Gangguan per Gedung</h3>
+        <div class="chart-wrap">
+            <canvas id="buildingFaultChart"></canvas>
+        </div>
+    </div>
+
+</div>
         </div>
 
     </section>
@@ -1150,7 +1176,6 @@ function closeRoomDetail() {
 
 
 /* RINGKASAN */
-
 function updateSummary() {
 
     const on = rooms.filter(r => r.status === "ON").length;
@@ -1167,8 +1192,24 @@ function updateSummary() {
     statusChart.data.datasets[0].data = [on, off, error];
     statusChart.update();
 
-}
+    // PERBARUI GRAFIK GANGGUAN PER GEDUNG
+    const buildings = [
+        "Gedung Perkuliahan",
+        "Laboratorium",
+        "Perpustakaan",
+        "Gedung Administrasi"
+    ];
 
+    const faultCounts = buildings.map(building =>
+        rooms.filter(r =>
+            r.building === building &&
+            (r.status === "GANGGUAN" || r.status === "OFFLINE")
+        ).length
+    );
+
+    buildingFaultChart.data.datasets[0].data = faultCounts;
+    buildingFaultChart.update();
+}
 /* FILTER */
 
 function resetFilter() {
@@ -1409,6 +1450,59 @@ new Chart(
 
                 y: {
                     ticks: { color: "#94a3b8" },
+                    grid: { color: "#263750" }
+                }
+            }
+        }
+    }
+);
+    /* CHART STATISTIK GANGGUAN PER GEDUNG */
+
+const buildingFaultChart = new Chart(
+    document.getElementById("buildingFaultChart"),
+    {
+        type: "bar",
+
+        data: {
+            labels: [
+                "Gedung Perkuliahan",
+                "Laboratorium",
+                "Perpustakaan",
+                "Gedung Administrasi"
+            ],
+
+            datasets: [{
+                label: "Jumlah Ruangan Gangguan",
+                data: [0, 1, 0, 0],
+                backgroundColor: "#ef4444",
+                borderRadius: 6
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#cbd5e1"
+                    }
+                }
+            },
+
+            scales: {
+                x: {
+                    ticks: { color: "#94a3b8" },
+                    grid: { color: "#263750" }
+                },
+
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: "#94a3b8",
+                        stepSize: 1
+                    },
                     grid: { color: "#263750" }
                 }
             }
