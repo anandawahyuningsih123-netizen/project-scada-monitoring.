@@ -692,6 +692,25 @@ footer {
         <div class="room-grid" id="roomGrid"></div>
 
     </section>
+    
+<!-- ALARM GANGGUAN -->
+<section id="alarm">
+
+    <div class="section-heading">
+        <div>
+            <h2>Alarm Gangguan Ruangan</h2>
+            <p>Daftar ruangan yang membutuhkan pemeriksaan</p>
+        </div>
+    </div>
+
+    <div class="card" id="alarmList">
+        <p style="color:#94a3b8;">
+            Memuat informasi gangguan...
+        </p>
+    </div>
+
+</section>
+
 
     <!-- CHART -->
     <section id="grafik">
@@ -1044,6 +1063,51 @@ function resetFilter() {
     document.getElementById("searchRoom").value = "";
     renderRooms();
 }
+    
+/* UPDATE ALARM GANGGUAN */
+
+function updateAlarm() {
+
+    const alarmList = document.getElementById("alarmList");
+
+    const faultyRooms = rooms.filter(room =>
+        room.status === "GANGGUAN" ||
+        room.status === "OFFLINE"
+    );
+
+    if (faultyRooms.length === 0) {
+        alarmList.innerHTML = `
+            <p style="color:#34d399;">
+                ✓ Tidak ada gangguan ruangan.
+            </p>
+        `;
+        return;
+    }
+
+    alarmList.innerHTML = faultyRooms.map(room => `
+        <div style="
+            background:#451a1a;
+            border:1px solid #ef4444;
+            padding:15px;
+            border-radius:9px;
+            margin-bottom:10px;
+        ">
+            <strong style="color:#f87171;">
+                ⚠ ${room.status}
+            </strong>
+
+            <p style="margin-top:8px;">
+                ${room.name}
+            </p>
+
+            <small style="color:#94a3b8;">
+                ${room.building} | ID: ${room.id}
+            </small>
+        </div>
+    `).join("");
+
+}
+
 
 /* DEVICE */
 
@@ -1266,6 +1330,7 @@ document.querySelectorAll(".menu a").forEach(link => {
 renderRooms();
 renderDevices();
 updateSummary();
+updateAlarm();
 
 </script>
 
