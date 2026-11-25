@@ -820,6 +820,16 @@ footer {
     <input
         type="text"
         id="searchActivity"
+        <input type="date" id="filterActivityDate"
+    onchange="filterActivity()"
+    style="
+        padding:12px;
+        border-radius:8px;
+        border:1px solid #334155;
+        background:#1e293b;
+        color:white;
+        margin-bottom:15px;
+    ">
         placeholder="Cari riwayat aktivitas..."
         oninput="filterActivity()"
         style="
@@ -1441,6 +1451,12 @@ function addActivity(message) {
         second: "2-digit"
     });
 
+    item.dataset.date = [
+        now.getFullYear(),
+        String(now.getMonth() + 1).padStart(2, "0"),
+        String(now.getDate()).padStart(2, "0")
+    ].join("-");
+
     const description = document.createElement("p");
     description.textContent = message;
 
@@ -1457,16 +1473,25 @@ function filterActivity() {
     const keyword = document.getElementById("searchActivity")
         .value.toLowerCase();
 
+    const selectedDate = document.getElementById("filterActivityDate")
+        .value;
+
     const activities = document.querySelectorAll(
         "#activityLog .activity-item"
     );
 
     activities.forEach(item => {
-        const text = item.textContent.toLowerCase();
 
-        item.style.display = text.includes(keyword)
-            ? ""
-            : "none";
+        const text = item.textContent.toLowerCase();
+        const activityDate = item.dataset.date || "";
+
+        const matchKeyword = text.includes(keyword);
+
+        const matchDate = !selectedDate ||
+            activityDate === selectedDate;
+
+        item.style.display =
+            matchKeyword && matchDate ? "" : "none";
     });
 }
     /* EKSPOR RIWAYAT AKTIVITAS CSV */
