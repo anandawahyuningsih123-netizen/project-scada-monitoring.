@@ -843,6 +843,17 @@ footer {
 ">
     Hapus Riwayat
 </button>
+        <button onclick="exportActivityCSV()" style="
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-bottom:15px;
+">
+    ↓ Ekspor Riwayat CSV
+</button>
         <div class="card" id="activityLog">
             <div class="activity-item">
                 <p>Sistem SCADA berhasil dijalankan</p>
@@ -1457,6 +1468,38 @@ function filterActivity() {
             ? ""
             : "none";
     });
+}
+    /* EKSPOR RIWAYAT AKTIVITAS CSV */
+
+function exportActivityCSV() {
+
+    const activities = document.querySelectorAll(
+        "#activityLog .activity-item"
+    );
+
+    let csv = "No,Aktivitas,Waktu\n";
+
+    activities.forEach((item, index) => {
+        const description = item.querySelector("p")?.textContent || "";
+        const time = item.querySelector("small")?.textContent || "";
+
+        const safeDescription = description.replace(/"/g, '""');
+        const safeTime = time.replace(/"/g, '""');
+
+        csv += `${index + 1},"${safeDescription}","${safeTime}"\n`;
+    });
+
+    const blob = new Blob(["\uFEFF" + csv], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Riwayat_Aktivitas_SCADA.csv";
+
+    link.click();
+
+    URL.revokeObjectURL(link.href);
 }
     /* HAPUS RIWAYAT AKTIVITAS */
 
