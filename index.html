@@ -1109,10 +1109,10 @@ function resetFilter() {
     renderRooms();
 }
     
+
 /* UPDATE ALARM GANGGUAN */
 
 function updateAlarm() {
-
     const alarmList = document.getElementById("alarmList");
 
     const faultyRooms = rooms.filter(room =>
@@ -1128,7 +1128,28 @@ function updateAlarm() {
         `;
         return;
     }
-// RIWAYAT PERUBAHAN STATUS RUANGAN
+
+    alarmList.innerHTML = faultyRooms.map(room => `
+        <div style="
+            background:#451a1a;
+            border:1px solid #ef4444;
+            padding:15px;
+            border-radius:9px;
+            margin-bottom:10px;
+        ">
+            <strong style="color:#f87171;">
+                ⚠ ${room.status}
+            </strong>
+            <p style="margin-top:8px;">${room.name}</p>
+            <small style="color:#94a3b8;">
+                ${room.building} | ID: ${room.id}
+            </small>
+        </div>
+    `).join("");
+}
+
+/* RIWAYAT PERUBAHAN STATUS */
+
 let previousRoomStatuses = {};
 
 function checkRoomEvents() {
@@ -1136,21 +1157,14 @@ function checkRoomEvents() {
         const previousStatus = previousRoomStatuses[room.id];
 
         if (previousStatus && previousStatus !== room.status) {
-
             if (room.status === "GANGGUAN" || room.status === "OFFLINE") {
                 showAlarmNotification(room);
-
-                addActivity(
-                    `Gangguan terdeteksi pada ${room.name} (${room.id})`
-                );
-
+                addActivity(`Gangguan terdeteksi pada ${room.name} (${room.id})`);
             } else if (
                 previousStatus === "GANGGUAN" ||
                 previousStatus === "OFFLINE"
             ) {
-                addActivity(
-                    `${room.name} (${room.id}) kembali normal`
-                );
+                addActivity(`${room.name} (${room.id}) kembali normal`);
             }
 
             updateAlarm();
@@ -1162,21 +1176,22 @@ function checkRoomEvents() {
     });
 }
 
-// MENAMPILKAN NOTIFIKASI
+/* NOTIFIKASI ALARM */
+
 function showAlarmNotification(room) {
     const toast = document.getElementById("alarmToast");
     const message = document.getElementById("alarmToastMessage");
 
-    message.textContent =
-        `${room.name} mengalami ${room.status}`;
-
+    message.textContent = `${room.name} mengalami ${room.status}`;
     toast.style.display = "block";
 
     setTimeout(() => {
         toast.style.display = "none";
     }, 5000);
 }
-    // SIMULASI GANGGUAN RUANGAN
+
+/* SIMULASI GANGGUAN */
+
 function simulateRoomFault() {
     const room = rooms.find(room => room.id === "R-101");
 
@@ -1194,7 +1209,9 @@ function simulateRoomFault() {
 
     checkRoomEvents();
 }
-    // RESET GANGGUAN RUANGAN
+
+/* RESET GANGGUAN */
+
 function resetRoomFault() {
     const faultyRoom = rooms.find(room =>
         room.status === "GANGGUAN"
@@ -1206,44 +1223,8 @@ function resetRoomFault() {
     }
 
     faultyRoom.status = "ON";
-
     checkRoomEvents();
 }
-    <button onclick="resetRoomFault()" style="
-    background:#059669;
-    color:white;
-    border:none;
-    padding:10px 16px;
-    border-radius:8px;
-    cursor:pointer;
-    margin:0 0 15px 8px;
-">
-    ✓ Reset Gangguan
-</button>
-    alarmList.innerHTML = faultyRooms.map(room => `
-        <div style="
-            background:#451a1a;
-            border:1px solid #ef4444;
-            padding:15px;
-            border-radius:9px;
-            margin-bottom:10px;
-        ">
-            <strong style="color:#f87171;">
-                ⚠ ${room.status}
-            </strong>
-
-            <p style="margin-top:8px;">
-                ${room.name}
-            </p>
-
-            <small style="color:#94a3b8;">
-                ${room.building} | ID: ${room.id}
-            </small>
-        </div>
-    `).join("");
-
-}
-
 
 /* DEVICE */
 
