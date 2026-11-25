@@ -816,7 +816,33 @@ footer {
 
             <button onclick="exportCSV()">Ekspor CSV</button>
         </div>
-
+<div style="margin-bottom:15px;">
+    <input
+        type="text"
+        id="searchActivity"
+        placeholder="Cari riwayat aktivitas..."
+        oninput="filterActivity()"
+        style="
+            width:100%;
+            padding:12px;
+            border-radius:8px;
+            border:1px solid #334155;
+            background:#1e293b;
+            color:white;
+        "
+    >
+</div>
+        <button onclick="clearActivity()" style="
+    background:#dc2626;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-bottom:15px;
+">
+    Hapus Riwayat
+</button>
         <div class="card" id="activityLog">
             <div class="activity-item">
                 <p>Sistem SCADA berhasil dijalankan</p>
@@ -1412,6 +1438,44 @@ function addActivity(message) {
 
     item.append(description, timestamp);
     log.prepend(item);
+}
+    /* FILTER RIWAYAT AKTIVITAS */
+
+function filterActivity() {
+
+    const keyword = document.getElementById("searchActivity")
+        .value.toLowerCase();
+
+    const activities = document.querySelectorAll(
+        "#activityLog .activity-item"
+    );
+
+    activities.forEach(item => {
+        const text = item.textContent.toLowerCase();
+
+        item.style.display = text.includes(keyword)
+            ? ""
+            : "none";
+    });
+}
+    /* HAPUS RIWAYAT AKTIVITAS */
+
+function clearActivity() {
+
+    const confirmation = confirm(
+        "Apakah kamu yakin ingin menghapus semua riwayat aktivitas?"
+    );
+
+    if (!confirmation) return;
+
+    const log = document.getElementById("activityLog");
+
+    log.innerHTML = `
+        <div class="activity-item">
+            <p>Riwayat aktivitas telah dibersihkan</p>
+            <small>${new Date().toLocaleString("id-ID")}</small>
+        </div>
+    `;
 }
 /* EXPORT CSV */
 
