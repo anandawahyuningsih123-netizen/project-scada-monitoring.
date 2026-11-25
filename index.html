@@ -817,19 +817,13 @@ footer {
             <button onclick="exportCSV()">Ekspor CSV</button>
         </div>
 <div style="margin-bottom:15px;">
+   <!-- FILTER RIWAYAT AKTIVITAS -->
+<div style="margin-bottom:15px;">
+
+    <!-- PENCARIAN -->
     <input
         type="text"
         id="searchActivity"
-        <input type="date" id="filterActivityDate"
-    onchange="filterActivity()"
-    style="
-        padding:12px;
-        border-radius:8px;
-        border:1px solid #334155;
-        background:#1e293b;
-        color:white;
-        margin-bottom:15px;
-    ">
         placeholder="Cari riwayat aktivitas..."
         oninput="filterActivity()"
         style="
@@ -839,8 +833,24 @@ footer {
             border:1px solid #334155;
             background:#1e293b;
             color:white;
+            margin-bottom:10px;
         "
     >
+
+    <!-- FILTER TANGGAL -->
+    <input
+        type="date"
+        id="filterActivityDate"
+        onchange="filterActivity()"
+        style="
+            padding:12px;
+            border-radius:8px;
+            border:1px solid #334155;
+            background:#1e293b;
+            color:white;
+        "
+    >
+
 </div>
         <button onclick="clearActivity()" style="
     background:#dc2626;
