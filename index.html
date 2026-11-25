@@ -730,7 +730,17 @@ footer {
             <p>Daftar ruangan yang membutuhkan pemeriksaan</p>
         </div>
     </div>
-
+<button onclick="simulateRoomFault()" style="
+    background:#dc2626;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-bottom:15px;
+">
+    ⚠ Simulasikan Gangguan
+</button>
     <div class="card" id="alarmList">
         <p style="color:#94a3b8;">
             Memuat informasi gangguan...
@@ -1166,6 +1176,50 @@ function showAlarmNotification(room) {
         toast.style.display = "none";
     }, 5000);
 }
+    // SIMULASI GANGGUAN RUANGAN
+function simulateRoomFault() {
+    const room = rooms.find(room => room.id === "R-101");
+
+    if (!room) return;
+
+    if (room.status === "GANGGUAN") {
+        room.status = "ON";
+        room.current = 0.45;
+        room.power = 99;
+    } else {
+        room.status = "GANGGUAN";
+        room.current = 0;
+        room.power = 0;
+    }
+
+    checkRoomEvents();
+}
+    // RESET GANGGUAN RUANGAN
+function resetRoomFault() {
+    const faultyRoom = rooms.find(room =>
+        room.status === "GANGGUAN"
+    );
+
+    if (!faultyRoom) {
+        alert("Tidak ada gangguan yang perlu direset.");
+        return;
+    }
+
+    faultyRoom.status = "ON";
+
+    checkRoomEvents();
+}
+    <button onclick="resetRoomFault()" style="
+    background:#059669;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    margin:0 0 15px 8px;
+">
+    ✓ Reset Gangguan
+</button>
     alarmList.innerHTML = faultyRooms.map(room => `
         <div style="
             background:#451a1a;
@@ -1413,6 +1467,7 @@ renderRooms();
 renderDevices();
 updateSummary();
 updateAlarm();
+checkRoomEvents();
 
 </script>
 
