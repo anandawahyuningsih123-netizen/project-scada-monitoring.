@@ -4,15 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>SCADA Campus Lighting Control | UNPAM</title>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-
-/* RESET */
 * {
     margin: 0;
     padding: 0;
@@ -33,89 +29,101 @@ body {
     left: 0;
     top: 0;
     background: #111c30;
-    border-right: 1px solid #243550;
+    border-right: 1px solid #263750;
     padding: 25px 18px;
+    z-index: 10;
 }
 
 .logo {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: bold;
     color: #38bdf8;
     margin-bottom: 8px;
 }
 
-.logo-desc {
+.logo-sub {
     font-size: 11px;
     color: #94a3b8;
     margin-bottom: 35px;
 }
 
 .menu-title {
-    font-size: 11px;
+    font-size: 10px;
     color: #64748b;
-    margin: 20px 10px 12px;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    margin: 22px 10px 10px;
 }
 
 .menu a {
     display: block;
-    text-decoration: none;
     color: #94a3b8;
-    padding: 13px;
-    border-radius: 9px;
+    text-decoration: none;
+    padding: 13px 14px;
+    border-radius: 8px;
     margin-bottom: 7px;
-    font-size: 14px;
+    font-size: 13px;
+    transition: .2s;
 }
 
-.menu a.active,
-.menu a:hover {
+.menu a:hover,
+.menu a.active {
     background: #1e3a5f;
     color: #38bdf8;
+}
+
+.sidebar-bottom {
+    position: absolute;
+    bottom: 25px;
+    left: 20px;
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.8;
 }
 
 /* MAIN */
 .main {
     margin-left: 250px;
-    padding: 25px 30px;
+    padding: 28px;
 }
 
-/* HEADER */
-.header {
+.topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 15px;
+    margin-bottom: 28px;
     flex-wrap: wrap;
-    margin-bottom: 30px;
 }
 
-.header h1 {
-    font-size: 24px;
-    margin-bottom: 6px;
+.topbar h1 {
+    font-size: 23px;
+    color: #f8fafc;
 }
 
-.header p {
-    font-size: 13px;
+.topbar p {
     color: #94a3b8;
+    font-size: 12px;
+    margin-top: 6px;
 }
 
 .clock {
-    background: #17263c;
-    border: 1px solid #29415f;
+    background: #142238;
+    border: 1px solid #294563;
     padding: 12px 18px;
     border-radius: 10px;
+    text-align: right;
+    font-size: 13px;
     color: #38bdf8;
-    font-weight: bold;
 }
 
-/* CONNECTION */
-.connection {
-    display: flex;
+/* STATUS */
+.system-status {
+    display: inline-flex;
     align-items: center;
     gap: 8px;
+    margin-top: 12px;
     color: #34d399;
-    font-size: 12px;
-    margin-top: 8px;
+    font-size: 11px;
 }
 
 .dot {
@@ -123,193 +131,343 @@ body {
     height: 8px;
     background: #34d399;
     border-radius: 50%;
+    display: inline-block;
 }
 
 /* SECTION */
-.section-title {
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin: 25px 0 16px;
+    flex-wrap: wrap;
+}
+
+.section-heading h2 {
     font-size: 17px;
-    margin-bottom: 18px;
+}
+
+.section-heading p {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 5px;
 }
 
 /* SUMMARY */
-.summary {
+.summary-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-    margin-bottom: 30px;
+    gap: 16px;
 }
 
 .card {
     background: linear-gradient(145deg, #172b45, #101d30);
     border: 1px solid #294563;
-    border-radius: 15px;
-    padding: 22px;
+    border-radius: 13px;
+    padding: 20px;
+    box-shadow: 0 8px 25px #0002;
 }
 
-.card p {
+.summary-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-card p {
+    font-size: 12px;
     color: #94a3b8;
-    font-size: 13px;
-    margin-bottom: 15px;
 }
 
-.card h2 {
-    font-size: 29px;
+.summary-card h2 {
+    font-size: 30px;
+    margin: 13px 0 7px;
 }
 
-.card small {
+.summary-card small {
+    font-size: 10px;
     color: #64748b;
-    font-size: 11px;
 }
 
-/* AREA */
-.area-grid {
+.summary-icon {
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    font-size: 25px;
+    opacity: .8;
+}
+
+.cyan { color: #38bdf8; }
+.green { color: #34d399; }
+.orange { color: #fbbf24; }
+.red { color: #f87171; }
+
+/* FILTER */
+.filter-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 17px;
+}
+
+select, input {
+    background: #111f33;
+    border: 1px solid #294563;
+    color: #e2e8f0;
+    padding: 11px 13px;
+    border-radius: 8px;
+    outline: none;
+    font-size: 12px;
+}
+
+input {
+    min-width: 220px;
+}
+
+button {
+    background: #0e7490;
+    border: none;
+    color: white;
+    padding: 11px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+button:hover {
+    background: #0891b2;
+}
+
+/* ROOM GRID */
+.room-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
+    gap: 15px;
 }
 
-.area-card {
+.room-card {
     background: #142238;
     border: 1px solid #294563;
-    padding: 20px;
-    border-radius: 14px;
+    border-radius: 12px;
+    padding: 17px;
+    transition: .2s;
 }
 
-.area-card h3 {
-    font-size: 15px;
-    margin-bottom: 12px;
+.room-card:hover {
+    border-color: #38bdf8;
+    transform: translateY(-2px);
 }
 
-.area-card p {
-    color: #94a3b8;
-    font-size: 12px;
-    margin-bottom: 15px;
+.room-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
 }
 
-.area-number {
-    font-size: 25px;
-    font-weight: bold;
-    color: #38bdf8;
+.room-top h3 {
+    font-size: 14px;
+}
+
+.room-id {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 6px;
+}
+
+.room-icon {
+    font-size: 24px;
 }
 
 .status {
     display: inline-block;
-    background: #064e3b;
-    color: #34d399;
     padding: 5px 10px;
     border-radius: 20px;
-    font-size: 11px;
-}
-    
-/* TAMPILAN MONITORING LAMPU */
-.lamp-item {
-    background: #0e1b2e;
-    border: 1px solid #294563;
-    border-radius: 10px;
-    padding: 13px;
-    margin-top: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-}
-
-.lamp-name {
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.lamp-location {
-    font-size: 11px;
-    color: #94a3b8;
-    margin-top: 5px;
-    margin-bottom: 7px;
-}
-
-.lamp-status {
     font-size: 10px;
     font-weight: bold;
-    padding: 6px 9px;
-    border-radius: 20px;
-    white-space: nowrap;
+    margin-top: 15px;
 }
 
-.lamp-on {
-    background: #064e3b;
+.status-on {
     color: #34d399;
+    background: #064e3b55;
 }
 
-.lamp-off {
-    background: #334155;
+.status-off {
+    color: #94a3b8;
+    background: #47556955;
+}
+
+.status-error {
+    color: #f87171;
+    background: #7f1d1d66;
+}
+
+.status-offline {
+    color: #fbbf24;
+    background: #78350f66;
+}
+
+.room-details {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #294563;
+    margin-top: 15px;
+    padding-top: 12px;
+    font-size: 11px;
+}
+
+.room-details span:first-child {
+    color: #64748b;
+}
+
+.room-details span:last-child {
+    color: #38bdf8;
+}
+
+/* CHART */
+.chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 16px;
+}
+
+.chart-card h3 {
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.chart-wrap {
+    height: 250px;
+    position: relative;
+}
+
+/* ACTIVITY */
+.activity-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid #263750;
+    font-size: 12px;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item p {
     color: #cbd5e1;
 }
 
-.lamp-error {
-    background: #7f1d1d;
-    color: #fca5a5;
+.activity-item small {
+    color: #64748b;
+    white-space: nowrap;
 }
 
-    
-/* TOMBOL KONTROL LAMPU */
-
-.lamp-controls {
-    display: flex;
-    gap: 6px;
+/* DEVICE */
+.device-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
 }
 
-.control-btn {
-    border: none;
-    padding: 7px 10px;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 10px;
-    font-weight: bold;
+.device {
+    background: #142238;
+    border: 1px solid #294563;
+    border-radius: 10px;
+    padding: 15px;
 }
 
-.btn-on {
-    background: #065f46;
-    color: #6ee7b7;
+.device h4 {
+    font-size: 12px;
+    margin-bottom: 10px;
 }
 
-.btn-off {
-    background: #334155;
-    color: #e2e8f0;
+.device p {
+    font-size: 11px;
+    color: #34d399;
 }
 
-.control-btn:hover {
-    filter: brightness(1.3);
+/* FOOTER */
+footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 11px;
+    padding: 30px 0 10px;
 }
-
 
 /* RESPONSIVE */
-@media (max-width: 1000px) {
-    .summary {
+@media(max-width:1100px) {
+    .summary-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .area-grid {
+    .room-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .device-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (max-width: 700px) {
+@media(max-width:750px) {
     .sidebar {
-        position: relative;
         width: 100%;
         height: auto;
+        position: relative;
+        padding: 15px;
+    }
+
+    .logo-sub, .sidebar-bottom, .menu-title {
+        display: none;
+    }
+
+    .logo {
+        margin-bottom: 12px;
+    }
+
+    .menu {
+        display: flex;
+        overflow-x: auto;
+        gap: 5px;
+    }
+
+    .menu a {
+        white-space: nowrap;
+        margin: 0;
+        padding: 10px;
     }
 
     .main {
         margin-left: 0;
-        padding: 20px;
+        padding: 18px;
     }
 
-    .summary,
-    .area-grid {
+    .chart-grid {
         grid-template-columns: 1fr;
     }
 }
 
+@media(max-width:500px) {
+    .summary-grid, .room-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .device-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .topbar h1 {
+        font-size: 19px;
+    }
+
+    .clock {
+        width: 100%;
+        text-align: left;
+    }
+}
 </style>
 </head>
 
@@ -318,384 +476,450 @@ body {
 <!-- SIDEBAR -->
 <aside class="sidebar">
 
-    <div class="logo">
-        SCADA LIGHTING
-    </div>
-
-    <div class="logo-desc">
-        UNIVERSITAS PAMULANG
-        PSDKU KOTA SERANG
-    </div>
-
-    <div class="menu-title">MENU UTAMA</div>
+    <div class="logo">SCADA LIGHTING</div>
+    <div class="logo-sub">CAMPUS MONITORING SYSTEM</div>
 
     <nav class="menu">
-        <a href="#" class="active">Dashboard</a>
-        <a href="#area">Monitoring Area</a>
-        <a href="#kontrol">Kontrol Lampu</a>
-        <a href="#grafik">Grafik Monitoring</a>
-        <a href="#alarm">Alarm Gangguan</a>
-        <a href="#riwayat">Riwayat Aktivitas</a>
+
+        <div class="menu-title">MENU UTAMA</div>
+
+        <a href="#dashboard" class="active">▦ Dashboard</a>
+        <a href="#monitoring">◉ Monitoring Ruangan</a>
+        <a href="#grafik">▥ Grafik Monitoring</a>
+        <a href="#perangkat">▣ Perangkat</a>
+        <a href="#aktivitas">◷ Riwayat Aktivitas</a>
+
     </nav>
 
-    <div class="menu-title">SISTEM</div>
-
-    <nav class="menu">
-        <a href="#informasi">Informasi Sistem</a>
-    </nav>
+    <div class="sidebar-bottom">
+        UNPAM PSDKU SERANG<br>
+        SCADA Lighting v1.0<br>
+        SIMULATION MODE
+    </div>
 
 </aside>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <main class="main">
 
-    <header class="header">
+    <!-- HEADER -->
+    <header class="topbar" id="dashboard">
 
         <div>
-            <h1>Campus Lighting Control</h1>
+            <h1>SCADA Campus Lighting Control</h1>
+            <p>Sistem Monitoring Lampu Penerangan Kampus Berbasis Web</p>
 
-            <p>
-                Sistem Monitoring dan Pengendalian
-                Lampu Penerangan Kampus
-            </p>
-
-            <div class="connection">
+            <div class="system-status">
                 <span class="dot"></span>
-                SIMULATION SYSTEM
+                SISTEM ONLINE (SIMULASI)
             </div>
         </div>
 
-        <div class="clock" id="clock">
-            Memuat waktu...
+        <div class="clock">
+            <div id="clock">00:00:00 WIB</div>
+            <small id="date">Memuat tanggal...</small>
         </div>
 
     </header>
 
-    <h2 class="section-title">
-        Ringkasan Monitoring
-    </h2>
+    <!-- SUMMARY -->
+    <div class="section-heading">
+        <div>
+            <h2>Ringkasan Monitoring</h2>
+            <p>Informasi kondisi lampu seluruh gedung</p>
+        </div>
+    </div>
 
-    <section class="summary">
+    <section class="summary-grid">
 
-        <div class="card">
-            <p>Total Lampu</p>
-             <h2 id="totalLamp">30</h2>
-            <small>6 Area Kampus</small>
+        <div class="card summary-card">
+            <span class="summary-icon">▣</span>
+            <p>Total Ruangan</p>
+            <h2 class="cyan" id="totalRooms">8</h2>
+            <small>Ruangan terdaftar</small>
         </div>
 
-        <div class="card">
+        <div class="card summary-card">
+            <span class="summary-icon">💡</span>
             <p>Lampu Menyala</p>
-            <h2 id="lampOn">25</h2>
-            <small>Status ON</small>
+            <h2 class="green" id="lampOn">6</h2>
+            <small>Rangkaian aktif</small>
         </div>
 
-        <div class="card">
+        <div class="card summary-card">
+            <span class="summary-icon">◯</span>
             <p>Lampu Mati</p>
-            <h2 id="lampOff">4</h2>
-            <small>Status OFF</small>
+            <h2 class="orange" id="lampOff">1</h2>
+            <small>Rangkaian tidak aktif</small>
         </div>
 
-        <div class="card">
+        <div class="card summary-card">
+            <span class="summary-icon">⚠</span>
             <p>Gangguan</p>
-            <h2 id="lampError">1</h2>
+            <h2 class="red" id="lampError">1</h2>
             <small>Perlu pemeriksaan</small>
         </div>
 
     </section>
 
- <section class="card" style="margin-bottom: 25px;">
-    <h3 style="margin-bottom: 15px;">Mode Pengendalian</h3>
-
-    <button class="control-btn btn-on" onclick="setMode('AUTO')">
-        MODE AUTO
-    </button>
-
-    <button class="control-btn btn-off" onclick="setMode('MANUAL')">
-        MODE MANUAL
-    </button>
-
-    <p id="modeStatus" style="margin-top: 12px; color: #38bdf8;">
-        Mode Aktif: MANUAL
-    </p>
-</section>  
-<section id="grafik" class="card" style="margin-top: 25px;">
-    <h2 class="section-title">Grafik Monitoring Lampu</h2>
-    <canvas id="lampChart"></canvas>
-    <section id="alarm" class="card" style="margin-top: 25px;">
-    <h2 class="section-title">Alarm Gangguan Lampu</h2>
-    <div id="alarmList"></div>
-        <section id="riwayat" class="card" style="margin-top: 25px;">
-    <h2 class="section-title">Riwayat Aktivitas</h2>
-    <div id="activityLog">
-        <p style="color: #94a3b8;">Belum ada aktivitas.</p>
+    <!-- ENERGY -->
+    <div class="section-heading">
+        <div>
+            <h2>Monitoring Energi</h2>
+            <p>Ringkasan penggunaan listrik penerangan</p>
+        </div>
     </div>
-</section>
-        <section id="informasi" class="card" style="margin-top: 25px;">
-    <h2 class="section-title">Informasi Sistem</h2>
 
-    <p style="margin-bottom: 10px;">
-        <strong>Nama Sistem:</strong> SCADA Campus Lighting Control
-    </p>
+    <section class="summary-grid">
 
-    <p style="margin-bottom: 10px;">
-        <strong>Lokasi:</strong> Universitas Pamulang PSDKU Kota Serang
-    </p>
+        <div class="card summary-card">
+            <p>Tegangan</p>
+            <h2 class="cyan">220 V</h2>
+            <small>Nilai simulasi</small>
+        </div>
 
-    <p style="margin-bottom: 10px;">
-        <strong>Jumlah Area:</strong> 6 Area Kampus
-    </p>
+        <div class="card summary-card">
+            <p>Total Arus</p>
+            <h2 class="green">3.25 A</h2>
+            <small>Nilai simulasi</small>
+        </div>
 
-    <p style="margin-bottom: 10px;">
-        <strong>Total Lampu:</strong> 30 Unit
-    </p>
+        <div class="card summary-card">
+            <p>Daya Aktif</p>
+            <h2 class="orange">715 W</h2>
+            <small>Nilai simulasi</small>
+        </div>
 
-    <p style="margin-bottom: 10px;">
-        <strong>Metode:</strong> Simulasi Monitoring dan Pengendalian Berbasis Web
-    </p>
+        <div class="card summary-card">
+            <p>Energi</p>
+            <h2 class="cyan">5.72 kWh</h2>
+            <small>Estimasi simulasi harian</small>
+        </div>
 
-    <p>
-        <strong>Status Sistem:</strong>
-        <span style="color: #34d399;">ONLINE (SIMULASI)</span>
-    </p>
-</section>
+    </section>
 
+    <!-- MONITORING -->
+    <section id="monitoring">
 
+        <div class="section-heading">
+            <div>
+                <h2>Monitoring Kondisi Ruangan</h2>
+                <p>Pemantauan kondisi lampu berdasarkan gedung dan ruangan</p>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+
+            <select id="buildingFilter" onchange="renderRooms()">
+                <option value="ALL">Semua Gedung</option>
+                <option value="Gedung Perkuliahan">Gedung Perkuliahan</option>
+                <option value="Laboratorium">Laboratorium</option>
+                <option value="Perpustakaan">Perpustakaan</option>
+                <option value="Gedung Administrasi">Gedung Administrasi</option>
+            </select>
+
+            <input type="text" id="searchRoom"
+                placeholder="Cari nama ruangan..."
+                oninput="renderRooms()">
+
+            <button onclick="resetFilter()">Reset Filter</button>
+
+        </div>
+
+        <div class="room-grid" id="roomGrid"></div>
+
+    </section>
+
+    <!-- CHART -->
+    <section id="grafik">
+
+        <div class="section-heading">
+            <div>
+                <h2>Analisis dan Grafik</h2>
+                <p>Visualisasi kondisi dan penggunaan energi lampu</p>
+            </div>
+        </div>
+
+        <div class="chart-grid">
+
+            <div class="card chart-card">
+                <h3>Distribusi Status Lampu</h3>
+                <div class="chart-wrap">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <h3>Konsumsi Energi Penerangan</h3>
+                <div class="chart-wrap">
+                    <canvas id="energyChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- DEVICE -->
+    <section id="perangkat">
+
+        <div class="section-heading">
+            <div>
+                <h2>Status Perangkat Monitoring</h2>
+                <p>Kondisi perangkat pengumpul data setiap gedung</p>
+            </div>
+        </div>
+
+        <div class="device-grid" id="deviceGrid"></div>
+
+    </section>
+
+    <!-- ACTIVITY -->
+    <section id="aktivitas">
+
+        <div class="section-heading">
+            <div>
+                <h2>Riwayat Aktivitas</h2>
+                <p>Catatan perubahan dan kejadian sistem</p>
+            </div>
+
+            <button onclick="exportCSV()">Ekspor CSV</button>
+        </div>
+
+        <div class="card" id="activityLog">
+            <div class="activity-item">
+                <p>Sistem SCADA berhasil dijalankan</p>
+                <small>Inisialisasi</small>
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        © 2026 Universitas Pamulang (UNPAM) – PSDKU Kota Serang
+        <br><br>
+        SCADA Campus Lighting Control | Prototype Monitoring System
+    </footer>
 
 </main>
 
 <script>
 
-// JAM DIGITAL
-function updateClock() {
+/* DATA RUANGAN SIMULASI */
 
-    const now = new Date();
-
-    document.getElementById("clock").textContent =
-        now.toLocaleDateString("id-ID") + " | " +
-        now.toLocaleTimeString("id-ID");
-
-}
-
-updateClock();
-setInterval(updateClock, 1000);
-
-// DATA SIMULASI LAMPU
-
-const campusAreas = [
+const rooms = [
     {
-        name: "Gedung Perkuliahan",
-        lamps: 8
+        id: "R-101",
+        name: "Ruang Kelas 101",
+        building: "Gedung Perkuliahan",
+        current: 0.45,
+        power: 99,
+        status: "ON"
     },
     {
-        name: "Laboratorium",
-        lamps: 5
+        id: "R-102",
+        name: "Ruang Kelas 102",
+        building: "Gedung Perkuliahan",
+        current: 0.00,
+        power: 0,
+        status: "OFF"
     },
     {
-        name: "Perpustakaan",
-        lamps: 4
+        id: "R-103",
+        name: "Ruang Kelas 103",
+        building: "Gedung Perkuliahan",
+        current: 0.52,
+        power: 114,
+        status: "ON"
     },
     {
-        name: "Area Parkir",
-        lamps: 5
+        id: "L-201",
+        name: "Laboratorium Komputer",
+        building: "Laboratorium",
+        current: 0.60,
+        power: 132,
+        status: "ON"
     },
     {
-        name: "Jalan dan Koridor Kampus",
-        lamps: 5
+        id: "L-202",
+        name: "Laboratorium Jaringan",
+        building: "Laboratorium",
+        current: 0.00,
+        power: 0,
+        status: "GANGGUAN"
     },
     {
-        name: "Gedung Administrasi",
-        lamps: 3
+        id: "P-301",
+        name: "Ruang Baca",
+        building: "Perpustakaan",
+        current: 0.38,
+        power: 84,
+        status: "ON"
+    },
+    {
+        id: "A-401",
+        name: "Ruang Administrasi",
+        building: "Gedung Administrasi",
+        current: 0.48,
+        power: 106,
+        status: "ON"
+    },
+    {
+        id: "A-402",
+        name: "Ruang Dosen",
+        building: "Gedung Administrasi",
+        current: 0.55,
+        power: 121,
+        status: "ON"
     }
 ];
 
+/* RENDER RUANGAN */
 
+function renderRooms() {
 
-const lampData = [];
-let lampId = 0;
+    const grid = document.getElementById("roomGrid");
+    const building = document.getElementById("buildingFilter").value;
+    const search = document.getElementById("searchRoom").value.toLowerCase();
 
-campusAreas.forEach(area => {
-    for (let i = 1; i <= area.lamps; i++) {
-        lampId++;
+    const filtered = rooms.filter(room => {
 
-        let status = "ON";
+        const matchBuilding =
+            building === "ALL" || room.building === building;
 
-        if ([10, 18, 25, 28].includes(lampId)) status = "OFF";
-        if (lampId === 30) status = "GANGGUAN";
+        const matchSearch =
+            room.name.toLowerCase().includes(search) ||
+            room.id.toLowerCase().includes(search);
 
-        lampData.push({
-            id: lampId,
-            name: "Lampu " + String(i).padStart(2, "0"),
-            area: area.name,
-            status: status
-        });
-    }
-});
+        return matchBuilding && matchSearch;
 
-function renderLampMonitoring() {
-    const container = document.getElementById("lampMonitoring");
-    let html = "";
-
-    campusAreas.forEach(area => {
-        html += `<div class="area-card">
-            <h3>${area.name}</h3>
-            <p>Monitoring dan kontrol lampu</p>`;
-
-        const lamps = lampData.filter(lamp => lamp.area === area.name);
-
-        lamps.forEach(lamp => {
-            let statusClass = "lamp-on";
-
-            if (lamp.status === "OFF") statusClass = "lamp-off";
-            if (lamp.status === "GANGGUAN") statusClass = "lamp-error";
-
-            html += `
-                <div class="lamp-item">
-                    <div>
-                        <div class="lamp-name">${lamp.name}</div>
-                        <div class="lamp-location">ID: L-${String(lamp.id).padStart(2, "0")}</div>
-                        <span class="lamp-status ${statusClass}">${lamp.status}</span>
-                    </div>
-
-                    <div class="lamp-controls">
-                        <button class="control-btn btn-on" onclick="controlLamp(${lamp.id}, 'ON')">ON</button>
-                        <button class="control-btn btn-off" onclick="controlLamp(${lamp.id}, 'OFF')">OFF</button>
-                    </div>
-                </div>`;
-        });
-
-        html += `</div>`;
     });
 
-    container.innerHTML = html;
-}
-    let controlMode = "MANUAL";
+    grid.innerHTML = "";
 
-
-function setMode(mode) {
-    controlMode = mode;
-
-    document.getElementById("modeStatus").textContent =
-        "Mode Aktif: " + mode;
-
-    if (mode === "AUTO") {
-        lampData.forEach(lamp => {
-            if (lamp.status !== "GANGGUAN") {
-                lamp.status = "ON";
-            }
-        });
-
-        alert("Mode AUTO aktif. Semua lampu normal dinyalakan.");
-    }
-
-    renderLampMonitoring();
-    updateSummary();
-    updateLampChart();
-}
-
-function controlLamp(id, command) {
-    const lamp = lampData.find(item => item.id === id);
-
-    if (!lamp) return;
-    if (controlMode !== "MANUAL") {
-    alert("Kontrol lampu hanya dapat digunakan pada mode MANUAL!");
-    return;
-}
-
-    if (lamp.status === "GANGGUAN") {
-        alert("Lampu mengalami gangguan!");
+    if (filtered.length === 0) {
+        grid.innerHTML = "<p>Tidak ada ruangan ditemukan.</p>";
         return;
     }
-lamp.status = command;
-    addActivity(
-    `${lamp.name} di ${lamp.area} diubah menjadi ${command}`
-);
-renderLampMonitoring();
-updateSummary();
-updateLampChart();
-    updateAlarm();
-}
-    function updateSummary() {
-    const total = lampData.length;
-    const on = lampData.filter(lamp => lamp.status === "ON").length;
-    const off = lampData.filter(lamp => lamp.status === "OFF").length;
-    const error = lampData.filter(lamp => lamp.status === "GANGGUAN").length;
 
-    document.getElementById("totalLamp").textContent = total;
+    filtered.forEach(room => {
+
+        let statusClass = "status-on";
+        let icon = "💡";
+
+        if (room.status === "OFF") {
+            statusClass = "status-off";
+            icon = "◯";
+        }
+
+        if (room.status === "GANGGUAN") {
+            statusClass = "status-error";
+            icon = "⚠";
+        }
+
+        if (room.status === "OFFLINE") {
+            statusClass = "status-offline";
+            icon = "⌁";
+        }
+
+        grid.innerHTML += `
+            <div class="room-card">
+
+                <div class="room-top">
+                    <div>
+                        <h3>${room.name}</h3>
+                        <div class="room-id">${room.building} • ${room.id}</div>
+                    </div>
+
+                    <div class="room-icon">${icon}</div>
+                </div>
+
+                <span class="status ${statusClass}">
+                    ${room.status}
+                </span>
+
+                <div class="room-details">
+                    <span>Arus</span>
+                    <span>${room.current.toFixed(2)} A</span>
+                </div>
+
+                <div class="room-details">
+                    <span>Daya</span>
+                    <span>${room.power} W</span>
+                </div>
+
+            </div>
+        `;
+
+    });
+
+}
+
+/* RINGKASAN */
+
+function updateSummary() {
+
+    const on = rooms.filter(r => r.status === "ON").length;
+    const off = rooms.filter(r => r.status === "OFF").length;
+    const error = rooms.filter(r =>
+        r.status === "GANGGUAN" || r.status === "OFFLINE"
+    ).length;
+
+    document.getElementById("totalRooms").textContent = rooms.length;
     document.getElementById("lampOn").textContent = on;
     document.getElementById("lampOff").textContent = off;
     document.getElementById("lampError").textContent = error;
+
+    statusChart.data.datasets[0].data = [on, off, error];
+    statusChart.update();
+
 }
-    
-function updateAlarm() {
-    const alarmList = document.getElementById("alarmList");
 
-    const faultyLamps = lampData.filter(
-        lamp => lamp.status === "GANGGUAN"
-    );
+/* FILTER */
 
-    if (faultyLamps.length === 0) {
-        alarmList.innerHTML = `
-            <p style="color: #34d399;">
-                Tidak ada gangguan lampu.
-            </p>`;
-        return;
-    }
+function resetFilter() {
+    document.getElementById("buildingFilter").value = "ALL";
+    document.getElementById("searchRoom").value = "";
+    renderRooms();
+}
 
-    alarmList.innerHTML = faultyLamps.map(lamp => `
-        <div style="
-            background: #451a1a;
-            border: 1px solid #ef4444;
-            padding: 13px;
-            border-radius: 9px;
-            margin-bottom: 10px;
-            color: #fca5a5;
-        ">
-            <strong>ALARM GANGGUAN</strong>
-            <p>${lamp.name} - ${lamp.area}</p>
-            <small>ID: L-${String(lamp.id).padStart(2, "0")}</small>
+/* DEVICE */
+
+const devices = [
+    "Panel Gedung Perkuliahan",
+    "Panel Laboratorium",
+    "Panel Perpustakaan",
+    "Panel Gedung Administrasi"
+];
+
+function renderDevices() {
+
+    const grid = document.getElementById("deviceGrid");
+
+    grid.innerHTML = devices.map((device, index) => `
+        <div class="device">
+            <h4>${device}</h4>
+            <p>● ONLINE (SIMULASI)</p>
+            <small style="color:#64748b">
+                Controller ${String(index + 1).padStart(2, "0")}
+            </small>
         </div>
     `).join("");
+
 }
 
-updateAlarm();
-    
-function addActivity(message) {
-    const activityLog = document.getElementById("activityLog");
+/* CHART STATUS */
 
-    const time = new Date().toLocaleTimeString("id-ID");
-
-    const entry = document.createElement("div");
-
-    entry.style.cssText = `
-        background: #0e1b2e;
-        border: 1px solid #294563;
-        padding: 12px;
-        border-radius: 8px;
-        margin-bottom: 8px;
-        font-size: 12px;
-    `;
-
-    entry.innerHTML = `
-        <span style="color: #38bdf8;">${time}</span>
-        <p style="margin-top: 5px;">${message}</p>
-    `;
-
-    activityLog.prepend(entry);
-}
-
-
-    
-let lampChart;
-
-function createLampChart() {
-    const ctx = document.getElementById("lampChart");
-
-    lampChart = new Chart(ctx, {
+const statusChart = new Chart(
+    document.getElementById("statusChart"),
+    {
         type: "doughnut",
+
         data: {
             labels: ["Menyala", "Mati", "Gangguan"],
+
             datasets: [{
-                data: [25, 4, 1],
+                data: [6, 1, 1],
                 backgroundColor: [
                     "#34d399",
                     "#64748b",
@@ -704,33 +928,182 @@ function createLampChart() {
                 borderWidth: 0
             }]
         },
+
         options: {
             responsive: true,
+            maintainAspectRatio: false,
+
             plugins: {
                 legend: {
+                    position: "bottom",
                     labels: {
-                        color: "#e2e8f0"
+                        color: "#cbd5e1",
+                        padding: 20
                     }
                 }
             }
         }
+    }
+);
+
+/* CHART ENERGI */
+
+new Chart(
+    document.getElementById("energyChart"),
+    {
+        type: "line",
+
+        data: {
+            labels: [
+                "07:00", "09:00", "11:00",
+                "13:00", "15:00", "17:00",
+                "19:00", "21:00"
+            ],
+
+            datasets: [{
+                label: "Energi (kWh)",
+                data: [0.4, 0.9, 1.5, 2.1, 2.8, 3.6, 4.5, 5.2],
+                borderColor: "#38bdf8",
+                backgroundColor: "#38bdf822",
+                fill: true,
+                tension: 0.4
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#cbd5e1"
+                    }
+                }
+            },
+
+            scales: {
+                x: {
+                    ticks: { color: "#94a3b8" },
+                    grid: { color: "#263750" }
+                },
+
+                y: {
+                    ticks: { color: "#94a3b8" },
+                    grid: { color: "#263750" }
+                }
+            }
+        }
+    }
+);
+
+/* JAM DAN TANGGAL */
+
+function updateClock() {
+
+    const now = new Date();
+
+    document.getElementById("clock").textContent =
+        now.toLocaleTimeString("id-ID", {
+            timeZone: "Asia/Jakarta"
+        }) + " WIB";
+
+    document.getElementById("date").textContent =
+        now.toLocaleDateString("id-ID", {
+            timeZone: "Asia/Jakarta",
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+/* AKTIVITAS */
+
+function addActivity(message) {
+
+    const log = document.getElementById("activityLog");
+
+    const item = document.createElement("div");
+    item.className = "activity-item";
+
+    const time = new Date().toLocaleTimeString("id-ID");
+
+    const description = document.createElement("p");
+    description.textContent = message;
+
+    const timestamp = document.createElement("small");
+    timestamp.textContent = time;
+
+    item.append(description, timestamp);
+    log.prepend(item);
+
+}
+
+/* EXPORT CSV */
+
+function exportCSV() {
+
+    const rows = [
+        ["ID", "Ruangan", "Gedung", "Arus", "Daya", "Status"]
+    ];
+
+    rooms.forEach(room => {
+        rows.push([
+            room.id,
+            room.name,
+            room.building,
+            room.current,
+            room.power,
+            room.status
+        ]);
     });
+
+    const csv = rows.map(row =>
+        row.map(value => `"${value}"`).join(",")
+    ).join("\n");
+
+    const blob = new Blob(
+        ["\uFEFF" + csv],
+        { type: "text/csv;charset=utf-8;" }
+    );
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "laporan-monitoring-lampu.csv";
+    link.click();
+
+    URL.revokeObjectURL(link.href);
+
+    addActivity("Laporan monitoring berhasil diekspor.");
+
 }
 
-function updateLampChart() {
-    const on = lampData.filter(lamp => lamp.status === "ON").length;
-    const off = lampData.filter(lamp => lamp.status === "OFF").length;
-    const error = lampData.filter(lamp => lamp.status === "GANGGUAN").length;
+/* MENU AKTIF */
 
-    lampChart.data.datasets[0].data = [on, off, error];
-    lampChart.update();
-}
+document.querySelectorAll(".menu a").forEach(link => {
 
-createLampChart();
+    link.addEventListener("click", function() {
 
-renderLampMonitoring();
-    updateSummary();
+        document.querySelectorAll(".menu a").forEach(item => {
+            item.classList.remove("active");
+        });
 
+        this.classList.add("active");
+
+    });
+
+});
+
+/* INISIALISASI */
+
+renderRooms();
+renderDevices();
+updateSummary();
 
 </script>
 
