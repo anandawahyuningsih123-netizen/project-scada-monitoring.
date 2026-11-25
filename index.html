@@ -831,6 +831,14 @@ footer {
 
 </div>
         </div>
+        <!-- GRAFIK KONSUMSI ENERGI PER GEDUNG -->
+<div class="card chart-card">
+    <h3>Konsumsi Energi per Gedung</h3>
+
+    <div class="chart-wrap">
+        <canvas id="buildingEnergyChart"></canvas>
+    </div>
+</div>
 
     </section>
 
@@ -1495,6 +1503,56 @@ const buildingFaultChart = new Chart(
                 borderRadius: 6
             }]
         },
+        /* GRAFIK KONSUMSI ENERGI PER GEDUNG */
+
+const buildingEnergyChart = new Chart(
+    document.getElementById("buildingEnergyChart"),
+    {
+        type: "bar",
+
+        data: {
+            labels: [
+                "Gedung Perkuliahan",
+                "Laboratorium",
+                "Perpustakaan",
+                "Gedung Administrasi"
+            ],
+
+            datasets: [{
+                label: "Konsumsi Energi (kWh)",
+                data: [12, 18, 10, 15],
+                backgroundColor: "#38bdf8",
+                borderRadius: 6
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#cbd5e1"
+                    }
+                }
+            },
+
+            scales: {
+                x: {
+                    ticks: { color: "#94a3b8" },
+                    grid: { color: "#263750" }
+                },
+
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: "#94a3b8" },
+                    grid: { color: "#263750" }
+                }
+            }
+        }
+    }
+);
 
         options: {
             responsive: true,
