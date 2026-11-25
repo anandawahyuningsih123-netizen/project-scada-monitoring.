@@ -531,6 +531,34 @@ footer {
     cursor: pointer;
 }
 
+/* NOTIFIKASI ALARM */
+
+.toast-notification {
+    display: none;
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 999;
+    width: 300px;
+    background: #451a1a;
+    border: 1px solid #ef4444;
+    border-left: 5px solid #ef4444;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 10px 30px #0008;
+}
+
+.toast-notification strong {
+    color: #f87171;
+    font-size: 13px;
+}
+
+.toast-notification p {
+    color: #e2e8f0;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
 </style>
 </head>
 
@@ -776,6 +804,13 @@ footer {
         </div>
 
     </section>
+    
+<!-- NOTIFIKASI ALARM -->
+<div class="toast-notification" id="alarmToast">
+    <strong>⚠ ALARM GANGGUAN</strong>
+    <p id="alarmToastMessage">Terdapat gangguan ruangan!</p>
+</div>
+
     
 <!-- MODAL DETAIL RUANGAN -->
 <div class="modal" id="roomModal">
@@ -1083,7 +1118,54 @@ function updateAlarm() {
         `;
         return;
     }
+// RIWAYAT PERUBAHAN STATUS RUANGAN
+let previousRoomStatuses = {};
 
+function checkRoomEvents() {
+    rooms.forEach(room => {
+        const previousStatus = previousRoomStatuses[room.id];
+
+        if (previousStatus && previousStatus !== room.status) {
+
+            if (room.status === "GANGGUAN" || room.status === "OFFLINE") {
+                showAlarmNotification(room);
+
+                addActivity(
+                    `Gangguan terdeteksi pada ${room.name} (${room.id})`
+                );
+
+            } else if (
+                previousStatus === "GANGGUAN" ||
+                previousStatus === "OFFLINE"
+            ) {
+                addActivity(
+                    `${room.name} (${room.id}) kembali normal`
+                );
+            }
+
+            updateAlarm();
+            updateSummary();
+            renderRooms();
+        }
+
+        previousRoomStatuses[room.id] = room.status;
+    });
+}
+
+// MENAMPILKAN NOTIFIKASI
+function showAlarmNotification(room) {
+    const toast = document.getElementById("alarmToast");
+    const message = document.getElementById("alarmToastMessage");
+
+    message.textContent =
+        `${room.name} mengalami ${room.status}`;
+
+    toast.style.display = "block";
+
+    setTimeout(() => {
+        toast.style.display = "none";
+    }, 5000);
+}
     alarmList.innerHTML = faultyRooms.map(room => `
         <div style="
             background:#451a1a;
