@@ -805,11 +805,28 @@ footer {
     </div>
 
     <!-- GRAFIK 3: TAMBAHAN -->
-    <div class="card chart-card">
-        <h3>Statistik Gangguan per Gedung</h3>
-        <div class="chart-wrap">
-            <canvas id="buildingFaultChart"></canvas>
-        </div>
+   <h3>Statistik Gangguan per Gedung</h3>
+
+<select id="buildingFilter" onchange="filterBuildingChart()"
+    style="
+        width:100%;
+        padding:10px;
+        margin:12px 0;
+        border-radius:8px;
+        background:#1e293b;
+        color:white;
+        border:1px solid #334155;
+    ">
+    <option value="SEMUA">Semua Gedung</option>
+    <option value="Gedung Perkuliahan">Gedung Perkuliahan</option>
+    <option value="Laboratorium">Laboratorium</option>
+    <option value="Perpustakaan">Perpustakaan</option>
+    <option value="Gedung Administrasi">Gedung Administrasi</option>
+</select>
+
+<div class="chart-wrap">
+    <canvas id="buildingFaultChart"></canvas>
+</div>
     </div>
 
 </div>
@@ -1711,6 +1728,37 @@ renderDevices();
 updateSummary();
 updateAlarm();
 checkRoomEvents();
+    function filterBuildingChart() {
+
+    const selectedBuilding = document.getElementById("buildingFilter").value;
+
+    const buildings = [
+        "Gedung Perkuliahan",
+        "Laboratorium",
+        "Perpustakaan",
+        "Gedung Administrasi"
+    ];
+
+    let filteredBuildings = buildings;
+
+    if (selectedBuilding !== "SEMUA") {
+        filteredBuildings = buildings.filter(
+            building => building === selectedBuilding
+        );
+    }
+
+    const faultCounts = filteredBuildings.map(building =>
+        rooms.filter(r =>
+            r.building === building &&
+            (r.status === "GANGGUAN" || r.status === "OFFLINE")
+        ).length
+    );
+
+    buildingFaultChart.data.labels = filteredBuildings;
+    buildingFaultChart.data.datasets[0].data = faultCounts;
+
+    buildingFaultChart.update();
+}
 
 </script>
 
